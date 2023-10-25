@@ -6,7 +6,8 @@ RUN go mod download
 
 COPY .env ./
 COPY *.go ./
-RUN go test ./...
+COPY ./examples ./examples
+RUN go test -v ./...
 
 RUN go build .
 
