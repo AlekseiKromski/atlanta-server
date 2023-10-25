@@ -5,7 +5,8 @@
   },
   "device": {
     "uuid": "6b2ad11d-f83a-4b40-bb9f-f5d316e4871d",
-    "apiKey": "123"
+    "api_key": "123",
+    "battery": 43.0
   },
   "sensor_data": {
     "pressure": {
