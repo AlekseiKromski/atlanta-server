@@ -1,6 +1,7 @@
 package main
 
 import (
+	"alekseikromski.com/atlanta/server"
 	"embed"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ func main() {
 
 	}
 	port := os.Getenv("PORT")
+	udpPort := os.Getenv("UDP_PORT")
 
 	r := gin.Default()
 	r.GET("/:file", func(context *gin.Context) {
@@ -47,6 +49,17 @@ func main() {
 		})
 	})
 
+	//Start upd server
+	udpServer := server.NewUDPServer(udpPort)
+	go func() {
+		err := udpServer.Start()
+		if err != nil {
+			log.Printf("Cannot run UDP server: %v", err)
+			return
+		}
+	}()
+
+	//Start API server
 	if err := r.Run(fmt.Sprintf(":%s", port)); err != nil {
 		log.Printf("error during running server: %v", err)
 	}
