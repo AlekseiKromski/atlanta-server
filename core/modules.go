@@ -1,6 +1,8 @@
 package core
 
 type Module interface {
-	Start(notifyChannel chan struct{}) // Start module
-	Stop()                             // Stop module
+	Start(notifyChannel chan struct{}, requirements map[string]Module) // Start module
+	Stop()                                                             // Stop module
+	Require() []string                                                 // Require list of required modules
+	Signature() string                                                 // Signature unique name
 }

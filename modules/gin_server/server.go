@@ -1,6 +1,7 @@
 package gin_server
 
 import (
+	"alekseikromski.com/atlanta/core"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -30,7 +31,7 @@ func NewServer(conf *ServerConfig) *Server {
 	}
 }
 
-func (s *Server) Start(notifyChannel chan struct{}) {
+func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core.Module) {
 	log.Println("HTTP Server: init http server")
 
 	router := gin.Default()
@@ -64,4 +65,12 @@ func (s *Server) Stop() {
 	if err := s.server.Shutdown(context.Background()); err != nil {
 		log.Printf("HTTP: cannot stop server: %s", err)
 	}
+}
+
+func (s *Server) Require() []string {
+	return []string{}
+}
+
+func (s *Server) Signature() string {
+	return "gin_server"
 }
