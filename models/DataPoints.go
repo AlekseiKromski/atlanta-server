@@ -4,4 +4,5 @@ import "time"
 
 type DataPoints interface {
 	ParseFromString(val string, measurementTime time.Time) error
+	ToArguments() []any
 }
