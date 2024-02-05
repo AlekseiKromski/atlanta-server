@@ -3,7 +3,6 @@ package gin_server
 import (
 	"alekseikromski.com/atlanta/core"
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net"
@@ -11,12 +10,12 @@ import (
 )
 
 type ServerConfig struct {
-	Port int
+	Address string
 }
 
-func NewServerConfig(port int) *ServerConfig {
+func NewServerConfig(address string) *ServerConfig {
 	return &ServerConfig{
-		Port: port,
+		Address: address,
 	}
 }
 
@@ -44,7 +43,7 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 	})
 
 	// Create tcp listener and server
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", s.config.Port))
+	listener, err := net.Listen("tcp", s.config.Address)
 	if err != nil {
 		log.Printf("HTTP Server: %s", err)
 	}

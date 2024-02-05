@@ -11,13 +11,13 @@ import (
 )
 
 type ServerConfig struct {
-	Port    int
+	Address string
 	BufSize int
 }
 
-func NewServerConfig(port, bufSize int) *ServerConfig {
+func NewServerConfig(address string, bufSize int) *ServerConfig {
 	return &ServerConfig{
-		Port:    port,
+		Address: address,
 		BufSize: bufSize,
 	}
 }
@@ -47,7 +47,7 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 	}
 	s.storage = storage
 
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", s.config.Port))
+	listener, err := net.Listen("tcp", s.config.Address)
 	if err != nil {
 		log.Printf("TCP consumer: cannot start listener: %s", err)
 		return
