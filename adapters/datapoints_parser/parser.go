@@ -9,24 +9,23 @@ import (
 )
 
 type DataPointsParser struct {
-	data        string
-	telemetries []models.DataPoints
+	Datapoints []models.DataPoints
 }
 
-func NewDataPointsParser(data string) *DataPointsParser {
+func NewDataPointsParser() *DataPointsParser {
 	return &DataPointsParser{
-		data: data,
+		Datapoints: []models.DataPoints{},
 	}
 }
 
 // TIME::2019-10-12T07:20:50.52Z;TEMP::14;PRS::1000PA
-func (dpp *DataPointsParser) Parse() ([]models.DataPoints, error) {
+func (dpp *DataPointsParser) Parse(data string) error {
 
-	dataPoints := dpp.parseStringToMap()
+	dataPoints := dpp.parseStringToMap(data)
 
 	measurementTime, err := time.Parse(time.RFC3339, dataPoints["TIME"])
 	if err != nil {
-		return nil, fmt.Errorf("cannot parse time in data: %s. Reason: %v", dpp.data, err)
+		return fmt.Errorf("cannot parse time in data: %s. Reason: %v", data, err)
 	}
 
 	for key, val := range dataPoints {
@@ -36,48 +35,48 @@ func (dpp *DataPointsParser) Parse() ([]models.DataPoints, error) {
 		case "TEMP":
 			td := &models.TemperatureData{}
 			if err := td.ParseFromString(val, measurementTime); err != nil {
-				return dpp.telemetries, fmt.Errorf("cannot parse temperature string: %v", err)
+				return fmt.Errorf("cannot parse temperature string: %v", err)
 			}
 
-			dpp.telemetries = append(dpp.telemetries, td)
+			dpp.Datapoints = append(dpp.Datapoints, td)
 		case "GEO":
 			gd := &models.GeoDataPoint{}
 			if err := gd.ParseFromString(val, measurementTime); err != nil {
-				return dpp.telemetries, fmt.Errorf("cannot parse geo string: %v", err)
+				return fmt.Errorf("cannot parse geo string: %v", err)
 			}
 
-			dpp.telemetries = append(dpp.telemetries, gd)
+			dpp.Datapoints = append(dpp.Datapoints, gd)
 		case "PRS":
 			pd := &models.PressureData{}
 			if err := pd.ParseFromString(val, measurementTime); err != nil {
-				return dpp.telemetries, fmt.Errorf("cannot parse pressure string: %v", err)
+				return fmt.Errorf("cannot parse pressure string: %v", err)
 			}
 
-			dpp.telemetries = append(dpp.telemetries, pd)
+			dpp.Datapoints = append(dpp.Datapoints, pd)
 		case "ALT":
 			ad := &models.AltitudeData{}
 			if err := ad.ParseFromString(val, measurementTime); err != nil {
-				return dpp.telemetries, fmt.Errorf("cannot parse altitude string: %v", err)
+				return fmt.Errorf("cannot parse altitude string: %v", err)
 			}
 
-			dpp.telemetries = append(dpp.telemetries, ad)
+			dpp.Datapoints = append(dpp.Datapoints, ad)
 		case "HUM":
 			hd := &models.HumidityData{}
 			if err := hd.ParseFromString(val, measurementTime); err != nil {
-				return dpp.telemetries, fmt.Errorf("cannot parse humidity string: %v", err)
+				return fmt.Errorf("cannot parse humidity string: %v", err)
 			}
 
-			dpp.telemetries = append(dpp.telemetries, hd)
+			dpp.Datapoints = append(dpp.Datapoints, hd)
 		default:
-			log.Printf("cannot parse key-value: %s/%s. Incoming string: %s", key, val, dpp.data)
+			log.Printf("cannot parse key-value: %s/%s. Incoming string: %s", key, val, data)
 		}
 	}
 
-	return dpp.telemetries, nil
+	return nil
 }
 
-func (dpp *DataPointsParser) parseStringToMap() map[string]string {
-	dataPointList := strings.Split(dpp.data, ";")
+func (dpp *DataPointsParser) parseStringToMap(data string) map[string]string {
+	dataPointList := strings.Split(data, ";")
 
 	dataPoints := make(map[string]string)
 
