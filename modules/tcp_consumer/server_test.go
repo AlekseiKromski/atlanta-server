@@ -1,14 +1,25 @@
 package tcp_consumer
 
 import (
+	"alekseikromski.com/atlanta/core"
+	"alekseikromski.com/atlanta/modules/storage/postgres"
 	"fmt"
 	"net"
 	"testing"
 )
 
 func TestConnection(t *testing.T) {
-	port := 3001
 	notifyChannel := make(chan struct{}, 1)
+	postgres := postgres.NewPostgres(
+		postgres.NewConfig(
+		// TODO: hide configuration
+		),
+	)
+	go postgres.Start(notifyChannel, map[string]core.Module{})
+	<-notifyChannel
+	defer postgres.Stop()
+
+	port := 3001
 
 	// Start tcp server
 	tcpServer := NewServer(
@@ -16,7 +27,9 @@ func TestConnection(t *testing.T) {
 	)
 
 	// Start & wait server
-	go tcpServer.Start(notifyChannel)
+	go tcpServer.Start(notifyChannel, map[string]core.Module{
+		"storage": postgres,
+	})
 	<-notifyChannel
 	defer tcpServer.Stop()
 
@@ -29,7 +42,7 @@ func TestConnection(t *testing.T) {
 	}
 
 	// Send data to tcp server
-	content := "tcp content"
+	content := "TIME::2019-10-12T07:20:50.52Z;TEMP::14;PRS::1000PA;HUM::32.0"
 	if _, err = clientConn.Write([]byte(content)); err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -40,5 +53,4 @@ func TestConnection(t *testing.T) {
 		t.Fatalf("server received unexpected data: %s", content)
 		return
 	}
-
 }

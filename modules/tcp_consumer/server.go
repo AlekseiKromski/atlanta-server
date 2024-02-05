@@ -1,6 +1,9 @@
 package tcp_consumer
 
 import (
+	"alekseikromski.com/atlanta/adapters/datapoints_parser"
+	"alekseikromski.com/atlanta/core"
+	"alekseikromski.com/atlanta/modules/storage"
 	"fmt"
 	"log"
 	"net"
@@ -23,24 +26,38 @@ type Server struct {
 	EventBus chan string
 	config   *ServerConfig
 	listener net.Listener
+	parser   *datapoints_parser.DataPointsParser
+	storage  storage.Storage
 }
 
 func NewServer(conf *ServerConfig) *Server {
 	return &Server{
 		EventBus: make(chan string, 1),
 		config:   conf,
+		parser:   datapoints_parser.NewDataPointsParser(),
 	}
 }
 
-func (s *Server) Start(notifyChannel chan struct{}) {
+func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core.Module) {
+	// Load requirements
+	storage, err := s.getStorageFromRequirement(requirements)
+	if err != nil {
+		log.Printf("TCP consumer: cannot start listener: %s", err)
+		return
+	}
+	s.storage = storage
+
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", s.config.Port))
 	if err != nil {
-		log.Printf("TCP consumer: %s", err)
+		log.Printf("TCP consumer: cannot start listener: %s", err)
+		return
 	}
 	s.listener = listener
 
 	// notify, that server started
 	notifyChannel <- struct{}{}
+
+	log.Println("TCP consumer: server started")
 
 	for {
 		// Accept incoming connections
@@ -62,10 +79,7 @@ func (s *Server) Start(notifyChannel chan struct{}) {
 
 func (s *Server) Stop() {
 	// Close tcp listener
-	if err := s.listener.Close(); err != nil {
-		log.Printf("TCP consumer: cannot read message")
-	}
-
+	s.listener.Close()
 	log.Printf("TCP consumer: listener closed")
 
 	//Close event bus
@@ -73,19 +87,46 @@ func (s *Server) Stop() {
 	log.Printf("TCP consumer: event bus closed")
 }
 
+func (s *Server) Require() []string {
+	return []string{
+		"storage",
+	}
+}
+
+func (s *Server) Signature() string {
+	return "tcp_consumer"
+}
+
+func (s *Server) getStorageFromRequirement(requirements map[string]core.Module) (storage.Storage, error) {
+	storage, ok := requirements["storage"].(storage.Storage)
+	if !ok {
+		return nil, fmt.Errorf("requiremnt list has wrong storage requirement")
+	}
+
+	return storage, nil
+}
+
 func (s *Server) handle(conn net.Conn) {
 	buf := make([]byte, s.config.BufSize)
 	count, err := conn.Read(buf)
 	if err != nil {
-		log.Printf("TCP consumer: cannot read message")
+		log.Printf("TCP consumer: cannot read message: %v", err)
 		return
 	}
 
 	message := string(buf[:count])
 
-	s.EventBus <- message
-
-	// TODO: parse and save
-	//parser := datapoints_parser.NewDataPointsParser(message)
 	log.Printf("TCP consumer: received %s", message)
+
+	if err := s.parser.Parse(message); err != nil {
+		log.Printf("TCP consumer: cannot parse message: %v", err)
+		return
+	}
+
+	if err := s.storage.SaveDatapoints(s.parser.Datapoints); err != nil {
+		log.Printf("TCP consumer: cannot save datapoints: %v", err)
+		return
+	}
+
+	s.EventBus <- message
 }
