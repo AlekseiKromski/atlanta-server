@@ -1,6 +1,6 @@
 package models
 
 type FloatData struct {
-	Value float32 `json:"value"`
+	Value float64 `json:"value"`
 	Type  string  `json:"type"`
 }
