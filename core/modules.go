@@ -5,4 +5,5 @@ type Module interface {
 	Stop()                                                             // Stop module
 	Require() []string                                                 // Require list of required modules
 	Signature() string                                                 // Signature unique name
+	Log(messages ...string)                                            // Log should have log mechanism
 }
