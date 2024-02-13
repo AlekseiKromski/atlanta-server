@@ -1,7 +1,6 @@
 package tcp_consumer
 
 import (
-	"log"
 	"net"
 	"strings"
 )
@@ -15,10 +14,10 @@ func (s *Server) listen() {
 				continue // ignore
 			}
 
-			log.Printf("TCP consumer: %v", err)
+			s.Log("cannot accept connection", err.Error())
 			continue
 		}
-		log.Printf("TCP consumer: new connection %s", conn.RemoteAddr())
+		s.Log("new connection", conn.RemoteAddr().String())
 
 		// Handle client connection in a goroutine
 		go s.handle(conn)
@@ -26,24 +25,30 @@ func (s *Server) listen() {
 }
 
 func (s *Server) handle(conn net.Conn) {
-	buf := make([]byte, s.config.BufSize)
+	buf := make([]byte, s.config.bufSize)
 	count, err := conn.Read(buf)
 	if err != nil {
-		log.Printf("TCP consumer: cannot read message: %v", err)
+		s.Log("cannot read message", err.Error())
 		return
 	}
 
 	message := string(buf[:count])
 
-	log.Printf("TCP consumer: received %s", message)
+	s.Log("received", message)
 
-	if err := s.parser.Parse(message); err != nil {
-		log.Printf("TCP consumer: cannot parse message: %v", err)
+	deviceUuid, datapoints, err := s.parser.Parse(message)
+	if err != nil {
+		s.Log("cannot parse message", message)
 		return
 	}
 
-	if err := s.storage.SaveDatapoints(s.parser.Datapoints); err != nil {
-		log.Printf("TCP consumer: cannot save datapoints: %v", err)
+	if len(deviceUuid) == 0 {
+		s.Log("empty device id, ignored", message)
+		return
+	}
+
+	if err := s.storage.SaveDatapoints(deviceUuid, datapoints); err != nil {
+		s.Log("cannot save datapoints", err.Error())
 		return
 	}
 
