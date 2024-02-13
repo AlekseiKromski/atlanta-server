@@ -4,7 +4,6 @@ import (
 	"alekseikromski.com/atlanta/adapters/datapoints_parser"
 	"alekseikromski.com/atlanta/core"
 	"alekseikromski.com/atlanta/modules/storage"
-	"log"
 	"net"
 )
 
@@ -28,14 +27,14 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 	// Load requirements
 	storage, err := s.getStorageFromRequirement(requirements)
 	if err != nil {
-		log.Printf("TCP consumer: cannot start listener: %s", err)
+		s.Log("cannot start listener", err.Error())
 		return
 	}
 	s.storage = storage
 
-	listener, err := net.Listen("tcp", s.config.Address)
+	listener, err := net.Listen("tcp", s.config.address)
 	if err != nil {
-		log.Printf("TCP consumer: cannot start listener: %s", err)
+		s.Log("cannot start listener", err.Error())
 		return
 	}
 	s.listener = listener
@@ -43,7 +42,7 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 	// notify, that server started
 	notifyChannel <- struct{}{}
 
-	log.Println("TCP consumer: server started")
+	s.Log("server started")
 
 	s.listen()
 }
@@ -51,11 +50,12 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 func (s *Server) Stop() {
 	// Close tcp listener
 	s.listener.Close()
-	log.Printf("TCP consumer: listener closed")
+
+	s.Log("listener closed")
 
 	//Close event bus
 	close(s.EventBus)
-	log.Printf("TCP consumer: event bus closed")
+	s.Log("event bus closed")
 }
 
 func (s *Server) Signature() string {

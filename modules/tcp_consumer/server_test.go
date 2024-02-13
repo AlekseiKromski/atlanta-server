@@ -12,7 +12,11 @@ func TestConnection(t *testing.T) {
 	notifyChannel := make(chan struct{}, 1)
 	postgres := postgres.NewPostgres(
 		postgres.NewConfig(
-		// TODO: hide configuration
+			"localhost",
+			"atlanta",
+			"postgres",
+			"postgres",
+			5432,
 		),
 	)
 	go postgres.Start(notifyChannel, map[string]core.Module{})
@@ -23,7 +27,7 @@ func TestConnection(t *testing.T) {
 
 	// Start tcp server
 	tcpServer := NewServer(
-		NewServerConfig(port, 250),
+		NewServerConfig(fmt.Sprintf(":%d", port), 250),
 	)
 
 	// Start & wait server
@@ -42,7 +46,7 @@ func TestConnection(t *testing.T) {
 	}
 
 	// Send data to tcp server
-	content := "TIME::2019-10-12T07:20:50.52Z;TEMP::14;PRS::1000PA;HUM::32.0"
+	content := "DEVICE::3cc76ff4-cbaa-436c-b727-45d526facfc7;TIME::2019-10-12T07:20:50.52Z;TEMP::14;PRS::1000PA;HUM::32.0"
 	if _, err = clientConn.Write([]byte(content)); err != nil {
 		fmt.Println("Error:", err)
 		return
