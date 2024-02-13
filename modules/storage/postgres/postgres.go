@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
-	"log"
 )
 
 type Config struct {
@@ -50,25 +49,35 @@ func (p *Postgres) Start(notifyChannel chan struct{}, requirements map[string]co
 
 	db, err := sql.Open("postgres", psqlCredits)
 	if err != nil {
-		log.Printf("cannot open connection to database: %v", err)
+		p.Log("cannot open connection to database", err.Error())
+		p.Stop()
 		return
 	}
 
 	err = db.Ping()
 	if err != nil {
-		log.Printf("cannot ping database: %v", err)
+		p.Log("cannot ping database", err.Error())
+		p.Stop()
 		return
 	}
 
-	log.Println("Postgres: successful connection")
+	p.Log("successful db connection")
 
 	p.db = db
+
+	if err := p.migrations(); err != nil {
+		p.Log("cannot complete migrations", err.Error())
+		p.Stop()
+		return
+	}
 
 	notifyChannel <- struct{}{}
 }
 
 func (p *Postgres) Stop() {
-	defer p.db.Close()
+	if p.db != nil {
+		defer p.db.Close()
+	}
 }
 
 func (p *Postgres) Require() []string {
