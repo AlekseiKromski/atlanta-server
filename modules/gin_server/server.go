@@ -2,8 +2,8 @@ package gin_server
 
 import (
 	"alekseikromski.com/atlanta/core"
+	v1 "alekseikromski.com/atlanta/modules/gin_server/v1"
 	"context"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net"
 	"net/http"
@@ -22,6 +22,7 @@ func NewServerConfig(address string) *ServerConfig {
 type Server struct {
 	config *ServerConfig
 	server *http.Server
+	api    Api
 }
 
 func NewServer(conf *ServerConfig) *Server {
@@ -33,14 +34,18 @@ func NewServer(conf *ServerConfig) *Server {
 func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core.Module) {
 	log.Println("HTTP Server: init http server")
 
-	router := gin.Default()
+	storage, err := s.getStorageFromRequirement(requirements)
+	if err != nil {
+		log.Printf("HTTP Server: %s", err)
+		return
+	}
 
-	// Register all handlers
-	router.GET("/healthz", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "OK",
-		})
-	})
+	s.api = v1.NewV1Api(storage)
+
+	if err := s.api.RegisterRoutes(); err != nil {
+		log.Printf("HTTP Server: %s", err)
+		return
+	}
 
 	// Create tcp listener and server
 	listener, err := net.Listen("tcp", s.config.Address)
@@ -48,7 +53,7 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 		log.Printf("HTTP Server: %s", err)
 	}
 	s.server = &http.Server{
-		Handler: router,
+		Handler: s.api.GetEngine(),
 	}
 
 	// Notify core, that we started listener
@@ -64,10 +69,6 @@ func (s *Server) Stop() {
 	if err := s.server.Shutdown(context.Background()); err != nil {
 		log.Printf("HTTP: cannot stop server: %s", err)
 	}
-}
-
-func (s *Server) Require() []string {
-	return []string{}
 }
 
 func (s *Server) Signature() string {
