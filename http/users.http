@@ -1,0 +1,16 @@
+### Create user
+POST http://localhost:3000/users/create
+Content-Type: application/json
+
+{
+  "username": "test",
+  "first_name": "test",
+  "second_name": "test",
+  "image": "test",
+  "password": "test",
+  "email": "test"
+}
+
+### Get user
+GET http://localhost:3000/users/get/a2d2a4e7-3f3d-4799-89eb-7d5cb94207e9
+Content-Type: application/json
