@@ -43,7 +43,7 @@ func (c *Core) startModules(modules []Module, requirements map[string]Module) {
 	startTime := time.Now()
 	log.Printf("Core: Start %d modules", len(modules))
 	for _, module := range modules {
-		var mReqs map[string]Module
+		mReqs := map[string]Module{}
 
 		for _, requirement := range module.Require() {
 			mReqs[requirement] = requirements[requirement]
