@@ -38,7 +38,7 @@ func (s *Server) handle(conn net.Conn) {
 
 	deviceUuid, datapoints, err := s.parser.Parse(message)
 	if err != nil {
-		s.Log("cannot parse message", message)
+		s.Log("cannot parse message: ", err.Error(), message)
 		return
 	}
 
