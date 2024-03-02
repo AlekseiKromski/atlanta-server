@@ -13,7 +13,7 @@ type PressureData struct {
 }
 
 func (p *PressureData) ParseFromString(val string, measurementTime time.Time) error {
-	value, err := strconv.ParseFloat(val[:len(val)-2], 64)
+	value, err := strconv.ParseFloat(val, 64)
 	if err != nil {
 		return fmt.Errorf("cannot parse PRS in string: %s. Reason: %v", val, err)
 	}
