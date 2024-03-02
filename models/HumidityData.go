@@ -7,22 +7,22 @@ import (
 )
 
 type HumidityData struct {
-	Humidity *FloatData `json:"humidity"`
-	Unit     string     `json:"unit"`
-	Time     time.Time  `json:"time"` //Measurement time
+	Humidity *IntegerData `json:"humidity"`
+	Unit     string       `json:"unit"`
+	Time     time.Time    `json:"time"` //Measurement time
 }
 
 func (h *HumidityData) ParseFromString(val string, measurementTime time.Time) error {
-	value, err := strconv.ParseFloat(val, 64)
+	value, err := strconv.ParseInt(val, 0, 64)
 	if err != nil {
-		return fmt.Errorf("cannot parse PRS in string: %s. Reason: %v", val, err)
+		return fmt.Errorf("cannot parse HUM in string: %s. Reason: %v", val, err)
 	}
 
-	h.Humidity = &FloatData{
-		Value: float64(value),
-		Type:  "float",
+	h.Humidity = &IntegerData{
+		Value: value,
+		Type:  "int",
 	}
-	h.Unit = "m3"
+	h.Unit = "percentage"
 	h.Time = measurementTime
 
 	return nil
@@ -30,7 +30,7 @@ func (h *HumidityData) ParseFromString(val string, measurementTime time.Time) er
 
 func (h *HumidityData) ToArguments() []any {
 	return []any{
-		strconv.FormatFloat(h.Humidity.Value, 'f', 6, 64),
+		strconv.FormatInt(h.Humidity.Value, 2),
 		h.Humidity.Type,
 		h.Unit,
 		h.Time.Format(time.RFC3339),

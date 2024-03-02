@@ -13,9 +13,7 @@ type TemperatureData struct {
 }
 
 func (t *TemperatureData) ParseFromString(val string, measurementTime time.Time) error {
-	index := len(val) - 1
-	tempType := val[index]
-	tempValue, err := strconv.ParseFloat(string(val[0:index]), 64)
+	tempValue, err := strconv.ParseFloat(val, 64)
 	if err != nil {
 		return fmt.Errorf("cannot parse TEMP in string: %s. Reason: %v", val, err)
 	}
@@ -24,7 +22,7 @@ func (t *TemperatureData) ParseFromString(val string, measurementTime time.Time)
 		Value: float64(tempValue),
 		Type:  "float",
 	}
-	t.Unit = string(tempType)
+	t.Unit = "C"
 	t.Time = measurementTime
 
 	return nil
