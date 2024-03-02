@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"alekseikromski.com/atlanta/models"
+	"alekseikromski.com/atlanta/modules/storage"
 	"fmt"
 )
 
@@ -16,4 +17,25 @@ func (p *Postgres) SaveDatapoints(deviceUuid string, datapoints []models.DataPoi
 	}
 
 	return nil
+}
+
+func (p *Postgres) GetAllDatapoints() ([]*storage.Datapoint, error) {
+	query := "SELECT id, deviceUuid, value, type, unit, measurement_time, created_at, updated_at FROM datapoints"
+	rows, err := p.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
+	}
+	defer rows.Close()
+
+	dps := []*storage.Datapoint{}
+	for rows.Next() {
+		dp := &storage.Datapoint{}
+		err := rows.Scan(&dp.ID, &dp.DeviceId, &dp.Value, &dp.ValueType, &dp.Unit, &dp.MeasurementTime, &dp.CreatedAt, &dp.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("cannot read response from database: %v", err)
+		}
+		dps = append(dps, dp)
+	}
+
+	return dps, nil
 }
