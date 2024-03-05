@@ -20,7 +20,7 @@ func (p *Postgres) SaveDatapoints(deviceUuid string, datapoints []models.DataPoi
 }
 
 func (p *Postgres) GetAllDatapoints() ([]*storage.Datapoint, error) {
-	query := "SELECT id, deviceUuid, value, type, unit, measurement_time, created_at, updated_at FROM datapoints"
+	query := "SELECT id, deviceUuid, value, type, unit, measurement_time, created_at, updated_at FROM datapoints ORDER BY created_at DESC"
 	rows, err := p.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
