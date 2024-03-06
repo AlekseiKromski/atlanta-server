@@ -71,6 +71,19 @@ func TestAltitudeData_ParseFromString(t *testing.T) {
 	assert.Equal(t, mtime, ad.Time)
 }
 
+func TestAltitudeData_negative(t *testing.T) {
+	str := "-32.5"
+	mtime := time.Now().UTC()
+
+	ad := AltitudeData{}
+	err := ad.ParseFromString(str, mtime)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 32.5, ad.Altitude.Value)
+	assert.Equal(t, "M", ad.Unit)
+	assert.Equal(t, mtime, ad.Time)
+}
+
 func TestAltitudeData_ToArguments(t *testing.T) {
 	str := "32.5"
 	mtime := time.Now().UTC()

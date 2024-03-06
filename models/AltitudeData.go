@@ -16,6 +16,9 @@ type AltitudeData struct {
 }
 
 func (a *AltitudeData) ParseFromString(val string, measurementTime time.Time) error {
+	if val[0] == '-' {
+		val = val[1:len(val)]
+	}
 	value, err := strconv.ParseFloat(val, 64)
 	if err != nil {
 		return fmt.Errorf("cannot parse ALT in string: %s. Reason: %v", val, err)
