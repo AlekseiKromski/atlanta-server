@@ -44,7 +44,7 @@ func (t *TemperatureData) ToArguments() []any {
 }
 
 func (t *TemperatureData) Validate() {
-	if t.Temperature.Value > 100 {
+	if t.Temperature.Value >= 50 {
 		t.Flags = append(t.Flags, "ignored")
 	}
 }
