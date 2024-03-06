@@ -140,6 +140,22 @@ var migrations = []*Migration{
 			   )
 		`,
 	},
+
+	// add flags field
+	&Migration{
+		Name: "alter_flags_filed",
+		Sql: `
+		ALTER TABLE datapoints ADD flags VARCHAR(255) DEFAULT NULL;
+		`,
+	},
+
+	// add label field
+	&Migration{
+		Name: "alter_label_field",
+		Sql: `
+		ALTER TABLE datapoints ADD label VARCHAR(50) DEFAULT NULL;
+		`,
+	},
 }
 
 func (p *Postgres) migrations() error {

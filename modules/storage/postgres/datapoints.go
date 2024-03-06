@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Postgres) SaveDatapoints(deviceUuid string, datapoints []models.DataPoints) error {
-	query := "INSERT INTO datapoints (deviceUuid, value, type, unit, measurement_time) VALUES ($1, $2, $3, $4, $5)"
+	query := "INSERT INTO datapoints (deviceUuid, value, type, unit, measurement_time, flags, label) VALUES ($1, $2, $3, $4, $5, $6, $7)"
 	for _, datapoint := range datapoints {
 		arguments := []any{deviceUuid}
 		arguments = append(arguments, datapoint.ToArguments()...)
@@ -20,7 +20,7 @@ func (p *Postgres) SaveDatapoints(deviceUuid string, datapoints []models.DataPoi
 }
 
 func (p *Postgres) GetAllDatapoints() ([]*storage.Datapoint, error) {
-	query := "SELECT id, deviceUuid, value, type, unit, measurement_time, created_at, updated_at FROM datapoints ORDER BY created_at DESC"
+	query := "SELECT id, deviceUuid, value, type, unit, label, flags, measurement_time, created_at, updated_at FROM datapoints ORDER BY created_at DESC"
 	rows, err := p.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
@@ -30,7 +30,7 @@ func (p *Postgres) GetAllDatapoints() ([]*storage.Datapoint, error) {
 	dps := []*storage.Datapoint{}
 	for rows.Next() {
 		dp := &storage.Datapoint{}
-		err := rows.Scan(&dp.ID, &dp.DeviceId, &dp.Value, &dp.ValueType, &dp.Unit, &dp.MeasurementTime, &dp.CreatedAt, &dp.UpdatedAt)
+		err := rows.Scan(&dp.ID, &dp.DeviceId, &dp.Value, &dp.ValueType, &dp.Unit, &dp.Label, &dp.Flags, &dp.MeasurementTime, &dp.CreatedAt, &dp.UpdatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("cannot read response from database: %v", err)
 		}

@@ -8,10 +8,12 @@ import (
 )
 
 type GeoDataPoint struct {
-	Lat  *FloatData `json:"lat"`
-	Lon  *FloatData `json:"lon"`
-	Unit string     `json:"unit"`
-	Time time.Time  `json:"time"` //Measurement time
+	Label string     `json:"label"`
+	Lat   *FloatData `json:"lat"`
+	Lon   *FloatData `json:"lon"`
+	Unit  string     `json:"unit"`
+	Time  time.Time  `json:"time"` //Measurement time
+	Flags []string   `json:"flags"`
 }
 
 // 56.098,23.090 - lat, lon
@@ -28,6 +30,7 @@ func (g *GeoDataPoint) ParseFromString(val string, measurementTime time.Time) er
 		return fmt.Errorf("cannot parse LON in string: %s. Reason: %v", val, err)
 	}
 
+	g.Label = "Geo-position"
 	geoType := "float"
 	g.Lat = &FloatData{
 		Value: float64(lat),
@@ -49,5 +52,9 @@ func (g *GeoDataPoint) ToArguments() []any {
 		g.Lat.Type, // same type for both values
 		g.Unit,
 		g.Time.Format(time.RFC3339),
+		strings.Join(g.Flags, ","),
+		g.Label,
 	}
 }
+
+func (g *GeoDataPoint) Validate() {}

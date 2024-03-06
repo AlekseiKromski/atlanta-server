@@ -11,6 +11,8 @@ type Datapoint struct {
 	Value           string    `json:"value"`
 	ValueType       string    `json:"type"`
 	Unit            string    `json:"unit"`
+	Label           *string   `json:"label"`
+	Flags           *string   `json:"flags"`
 	MeasurementTime time.Time `json:"measurement_time"`
 	CreatedAt       time.Time `json:"created_at"`
 	UpdatedAt       time.Time `json:"updated_at"`
