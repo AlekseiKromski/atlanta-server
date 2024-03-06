@@ -60,6 +60,8 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 				return deviceUuid, nil, fmt.Errorf("cannot parse temperature string: %v", err)
 			}
 
+			td.Label = "BMP180 TEMP"
+
 			td.Validate()
 
 			datapoints = append(datapoints, td)
@@ -96,6 +98,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 				return deviceUuid, nil, fmt.Errorf("cannot parse altitude string: %v", err)
 			}
 
+			ad.Label = "BMP180 Altitude"
 			ad.Validate()
 
 			datapoints = append(datapoints, ad)
