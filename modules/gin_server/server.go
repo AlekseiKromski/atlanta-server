@@ -51,6 +51,7 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 	listener, err := net.Listen("tcp", s.config.Address)
 	if err != nil {
 		log.Printf("HTTP Server: %s", err)
+		return
 	}
 	s.server = &http.Server{
 		Handler: s.api.GetEngine(),
@@ -62,12 +63,14 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 	// Start server
 	if err := s.server.Serve(listener); err != nil {
 		log.Printf("HTTP Server: %s\n", err)
+		return
 	}
 }
 
 func (s *Server) Stop() {
 	if err := s.server.Shutdown(context.Background()); err != nil {
 		log.Printf("HTTP: cannot stop server: %s", err)
+		return
 	}
 }
 
