@@ -10,12 +10,14 @@ import (
 type V1 struct {
 	router  *gin.Engine
 	storage storage.Storage
+	log     func(messages ...string)
 }
 
-func NewV1Api(storage storage.Storage) *V1 {
+func NewV1Api(storage storage.Storage, log func(messages ...string)) *V1 {
 	return &V1{
 		router:  gin.Default(),
 		storage: storage,
+		log:     log,
 	}
 }
 

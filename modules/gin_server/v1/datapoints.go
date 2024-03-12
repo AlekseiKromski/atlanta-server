@@ -10,7 +10,8 @@ func (v *V1) GetAllDatapoints(store storage.Storage) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		dps, err := store.GetAllDatapoints()
 		if err != nil {
-			c.Status(400)
+			v.log("cannot get all datapoints from database", err.Error())
+			c.JSON(400, NewErrorResponse("cannot get datapoints"))
 			return
 		}
 
@@ -24,18 +25,21 @@ func (v *V1) FindDatapoints(store storage.Storage) func(c *gin.Context) {
 
 		findReq := &storage.FindDatapoints{}
 		if err := json.NewDecoder(c.Request.Body).Decode(findReq); err != nil {
-			c.Status(400)
+			v.log("cannot decode incoming request", err.Error())
+			c.JSON(400, NewErrorResponse("cannot decode incoming request"))
 			return
 		}
 
 		if ok := findReq.Validate(); !ok {
-			c.Status(400)
+			v.log("incoming request validation failed")
+			c.JSON(400, NewErrorResponse("validation failed"))
 			return
 		}
 
 		dps, labels, err := store.FindDatapoints(findReq)
 		if err != nil {
-			c.Status(400)
+			v.log("cannot find datapoints", err.Error())
+			c.JSON(500, NewErrorResponse("cannot find datapoints"))
 			return
 		}
 
@@ -63,7 +67,8 @@ func (v *V1) GetAllLabels(store storage.Storage) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		labels, err := store.FindAllLabels()
 		if err != nil {
-			c.Status(400)
+			v.log("cannot find all labels", err.Error())
+			c.JSON(400, NewErrorResponse("cannot find all labels"))
 			return
 		}
 

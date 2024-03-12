@@ -40,7 +40,7 @@ func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core
 		return
 	}
 
-	s.api = v1.NewV1Api(storage)
+	s.api = v1.NewV1Api(storage, s.Log)
 
 	if err := s.api.RegisterRoutes(); err != nil {
 		log.Printf("HTTP Server: %s", err)
