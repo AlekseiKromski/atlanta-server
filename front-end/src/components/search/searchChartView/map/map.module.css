@@ -1,0 +1,16 @@
+.Map {
+    height: 500px;
+    z-index: 1;
+}
+
+.Header{
+    margin-bottom: 15px;
+}
+
+.Header h1{
+    font-weight: bold;
+}
+
+.Body {
+    gap: 15px;
+}

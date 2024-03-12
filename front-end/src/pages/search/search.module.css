@@ -1,0 +1,8 @@
+.SearchBody {
+    padding: 15px;
+    gap: 15px;
+}
+
+.Wrapper {
+    gap: inherit;
+}

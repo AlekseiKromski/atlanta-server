@@ -1,0 +1,10 @@
+.Navbar{
+    padding: 15px;
+    background: #212121;
+    color: white;
+}
+.Navbar a {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 22px;
+}
