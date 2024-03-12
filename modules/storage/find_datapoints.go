@@ -2,14 +2,14 @@ package storage
 
 import "time"
 
-type FindDatapoints struct {
+type FindDatapointsRequest struct {
 	Start   *time.Time `json:"start"`
 	End     *time.Time `json:"end"`
 	Select  []string   `json:"select"`
 	Ignored bool       `json:"ignored"`
 }
 
-func (fd *FindDatapoints) Validate() bool {
+func (fd *FindDatapointsRequest) Validate() bool {
 	if fd.Start == nil {
 		return false
 	}

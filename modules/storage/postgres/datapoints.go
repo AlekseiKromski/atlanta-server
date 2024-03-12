@@ -24,7 +24,7 @@ func (p *Postgres) GetAllDatapoints() ([]*storage.Datapoint, error) {
 	query := "SELECT id, deviceUuid, value, type, unit, label, flags, measurement_time, created_at, updated_at FROM datapoints ORDER BY created_at DESC LIMIT 3000"
 	rows, err := p.db.Query(query)
 	if err != nil {
-		return nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
+		return nil, fmt.Errorf("cannot get all datapoints: %v", err)
 	}
 	defer rows.Close()
 
@@ -41,7 +41,7 @@ func (p *Postgres) GetAllDatapoints() ([]*storage.Datapoint, error) {
 	return dps, nil
 }
 
-func (p *Postgres) FindDatapoints(fd *storage.FindDatapoints) ([]*storage.Datapoint, []string, error) {
+func (p *Postgres) FindDatapoints(fd *storage.FindDatapointsRequest) ([]*storage.Datapoint, []string, error) {
 	query := "SELECT DISTINCT ON (measurement_time, label) id, deviceUuid, value, type, unit, label, flags, measurement_time, created_at, updated_at FROM datapoints WHERE measurement_time BETWEEN $1 and $2 "
 
 	items := ""
@@ -61,7 +61,7 @@ func (p *Postgres) FindDatapoints(fd *storage.FindDatapoints) ([]*storage.Datapo
 
 	rows, err := p.db.Query(query, fd.Start.Format(time.RFC3339), fd.End.Format(time.RFC3339))
 	if err != nil {
-		return nil, nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
+		return nil, nil, fmt.Errorf("cannot find datapoints: %v", err)
 	}
 	defer rows.Close()
 
@@ -92,7 +92,7 @@ func (p *Postgres) FindDatapoints(fd *storage.FindDatapoints) ([]*storage.Datapo
 
 	rows, err = p.db.Query(query, fd.Start.Format(time.RFC3339), fd.End.Format(time.RFC3339))
 	if err != nil {
-		return nil, nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
+		return nil, nil, fmt.Errorf("cannot get all unique measurement time: %v", err)
 	}
 	defer rows.Close()
 
@@ -114,7 +114,7 @@ func (p *Postgres) FindAllLabels() ([]string, error) {
 
 	rows, err := p.db.Query(query)
 	if err != nil {
-		return nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
+		return nil, fmt.Errorf("cannot get all unique labels: %v", err)
 	}
 	defer rows.Close()
 

@@ -23,7 +23,7 @@ func (v *V1) FindDatapoints(store storage.Storage) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		defer c.Request.Body.Close()
 
-		findReq := &storage.FindDatapoints{}
+		findReq := &storage.FindDatapointsRequest{}
 		if err := json.NewDecoder(c.Request.Body).Decode(findReq); err != nil {
 			v.log("cannot decode incoming request", err.Error())
 			c.JSON(400, NewErrorResponse("cannot decode incoming request"))

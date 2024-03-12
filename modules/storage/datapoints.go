@@ -20,6 +20,6 @@ type Datapoint struct {
 
 type StorageDatapoint interface {
 	GetAllDatapoints() ([]*Datapoint, error)
-	FindDatapoints(fd *FindDatapoints) ([]*Datapoint, []string, error)
+	FindDatapoints(fd *FindDatapointsRequest) ([]*Datapoint, []string, error)
 	FindAllLabels() ([]string, error)
 }
