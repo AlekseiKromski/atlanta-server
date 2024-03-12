@@ -22,14 +22,16 @@ func NewV1Api(storage storage.Storage) *V1 {
 func (v *V1) RegisterRoutes() error {
 	v.router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"PUT", "PATCH", "GET"},
-		AllowHeaders:     []string{"Origin"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
 	v.router.GET("/healthz", v.Healthz)
-	v.router.GET("/datapoint/get-all", v.GetAllDatapoints(v.storage))
+	v.router.GET("/datapoint/get-all", v.GetAllDatapoints(v.storage)) //TODO: remove
+	v.router.GET("/datapoints/info/labels", v.GetAllLabels(v.storage))
+	v.router.POST("/datapoints/find", v.FindDatapoints(v.storage))
 	users := v.router.Group("/users")
 	{
 		users.POST("/create", v.CreateUser(v.storage))
