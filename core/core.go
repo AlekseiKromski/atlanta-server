@@ -8,14 +8,16 @@ import (
 )
 
 type Core struct {
-	systemChannel chan os.Signal
-	notifyChannel chan struct{}
+	systemChannel   chan os.Signal
+	notifyChannel   chan struct{}
+	eventBusChannel chan BusEvent
 }
 
 func NewCore() *Core {
 	return &Core{
-		systemChannel: make(chan os.Signal, 1),
-		notifyChannel: make(chan struct{}, 1),
+		systemChannel:   make(chan os.Signal, 1),
+		notifyChannel:   make(chan struct{}, 1),
+		eventBusChannel: make(chan BusEvent, 1),
 	}
 }
 
@@ -40,6 +42,8 @@ func (c *Core) Init(modules []Module) {
 }
 
 func (c *Core) startModules(modules []Module, requirements map[string]Module) {
+	defer close(c.notifyChannel)
+
 	startTime := time.Now()
 	log.Printf("Core: Start %d modules", len(modules))
 	for _, module := range modules {
@@ -49,7 +53,7 @@ func (c *Core) startModules(modules []Module, requirements map[string]Module) {
 			mReqs[requirement] = requirements[requirement]
 		}
 
-		go module.Start(c.notifyChannel, mReqs)
+		go module.Start(c.notifyChannel, c.eventBusChannel, mReqs)
 
 		//Wait until module start
 		<-c.notifyChannel
