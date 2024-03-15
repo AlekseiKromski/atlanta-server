@@ -9,13 +9,14 @@ import {
     useDisclosure
 } from "@nextui-org/react";
 
-export default function Wrapper({children, isDark, width , title, modal}) {
+export default function Wrapper({children, isDark, width, height, title, modal}) {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
     return (
         <div style={{
-            width: width ? width : "100%"
+            width: width ? width : "100%",
+            height: height ? height : "auto",
         }} className={ isDark ? WrapperStyle.Wrapper : WrapperStyle.Main + " w-full flex flex-col"}>
             <div className={WrapperStyle.Header + " flex justify-between items-center rounded-md"}>
                 <h1 className="font-bold">{title}</h1>

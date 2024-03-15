@@ -3,10 +3,6 @@
     gap: 15px;
 }
 
-.Wrapper {
-    gap: inherit;
-}
-
-.LiveTabs {
-    min-height: 700px;
+.LiveStatus{
+    gap: 15px;
 }
