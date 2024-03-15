@@ -1,4 +1,3 @@
-import {useEffect, useState} from "react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -13,14 +12,9 @@ import { Line } from 'react-chartjs-2';
 import ChartStyle from "./charts.module.css"
 import {
     Button,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
     Popover, PopoverContent, PopoverTrigger,
-    useDisclosure
 } from "@nextui-org/react";
+import Wrapper from "../../../common/wrapper/wrapper";
 
 ChartJS.register(
     CategoryScale,
@@ -36,8 +30,7 @@ function random(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-export default function Chart({wrapper, labels, datapoints}) {
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+export default function Chart({isDark, labels, datapoints}) {
 
     datapoints = datapoints.data
 
@@ -90,44 +83,18 @@ export default function Chart({wrapper, labels, datapoints}) {
     })
 
     return (
-        <div className={wrapper ? ChartStyle.Wrapper : ""}>
-            <div className={ChartStyle.Header + " flex justify-between items-center rounded-md"}>
-                <h1 className="font-bold">Chart view</h1>
-                <Button size="sm" color="primary" variant="light" onPress={onOpen}>Help</Button>
-                <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
-                    <ModalContent>
-                        {(onClose) => (
-                            <>
-                                <ModalHeader className="flex flex-col gap-1">Search instruction</ModalHeader>
-                                <ModalBody>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                        Nullam pulvinar risus non risus hendrerit venenatis.
-                                        Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                                    </p>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                        Nullam pulvinar risus non risus hendrerit venenatis.
-                                        Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                                    </p>
-                                    <p>
-                                        Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
-                                        dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis.
-                                        Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod.
-                                        Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur
-                                        proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                                    </p>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="danger" variant="light" onPress={onClose}>
-                                        Close
-                                    </Button>
-                                </ModalFooter>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
-            </div>
+        <Wrapper
+            title="Chart"
+            modal={{
+                title: "Chart help",
+                body: (
+                    <p>
+                        TODO: ...
+                    </p>
+                )
+            }}
+            isDark={isDark}
+        >
             <div className={ChartStyle.Chart + " flex flex-col"}>
                 <div>
                     <Popover placement="right">
@@ -153,6 +120,6 @@ export default function Chart({wrapper, labels, datapoints}) {
                 </div>
                 <Line options={options} data={datalist} />
             </div>
-        </div>
+        </Wrapper>
     );
 }

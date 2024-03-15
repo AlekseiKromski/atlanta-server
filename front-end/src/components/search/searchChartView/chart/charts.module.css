@@ -1,13 +1,3 @@
 .Chart{
     gap: 15px;
 }
-
-.Header {
-    font-weight: bold;
-}
-
-.Wrapper{
-    padding: 15px;
-    border-radius: 15px;
-    background: #eaeaea!important;
-}

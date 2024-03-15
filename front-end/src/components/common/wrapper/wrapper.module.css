@@ -5,6 +5,13 @@
     height: fit-content;
 }
 
+.Wrapper {
+    background: #eaeaea;
+    padding: 15px;
+    border-radius: 16px;
+    height: fit-content;
+}
+
 .Header{
     margin-bottom: 15px;
 }
@@ -15,14 +22,4 @@
 
 .Body {
     height: fit-content;
-}
-
-.Table {
-    display: block;
-    height: 350px;
-    overflow-y: scroll;
-}
-
-.Footer{
-    margin-top: 15px;
 }

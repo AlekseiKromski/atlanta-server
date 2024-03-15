@@ -6,26 +6,19 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import {
     Button,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
     Popover, PopoverContent, PopoverTrigger,
-    useDisclosure
 } from "@nextui-org/react";
-import {useState} from "react";
+import Wrapper from "../../../common/wrapper/wrapper";
 let DefaultIcon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-export default function Map({wrapper, labels, datapoints}) {
+export default function Map({isDark, labels, datapoints}) {
     datapoints = datapoints.data.datapoints
 
     const position = [59.3573116, 27.4136646]
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
     let lastLength = null
     let result = true
@@ -45,44 +38,18 @@ export default function Map({wrapper, labels, datapoints}) {
     })
 
     return (
-        <div className={wrapper ? MapStyle.Wrapper : ""}>
-            <div className={MapStyle.Header + " flex justify-between items-center rounded-md"}>
-                <h1 className="font-bold">Map view</h1>
-                <Button size="sm" color="primary" variant="light" onPress={onOpen}>Help</Button>
-                <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
-                    <ModalContent>
-                        {(onClose) => (
-                            <>
-                                <ModalHeader className="flex flex-col gap-1">Search instruction</ModalHeader>
-                                <ModalBody>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                        Nullam pulvinar risus non risus hendrerit venenatis.
-                                        Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                                    </p>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                        Nullam pulvinar risus non risus hendrerit venenatis.
-                                        Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                                    </p>
-                                    <p>
-                                        Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
-                                        dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis.
-                                        Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod.
-                                        Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur
-                                        proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                                    </p>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="danger" variant="light" onPress={onClose}>
-                                        Close
-                                    </Button>
-                                </ModalFooter>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
-            </div>
+        <Wrapper
+            title="Map"
+            modal={{
+                title: "Map help",
+                body: (
+                    <p>
+                        TODO: ...
+                    </p>
+                )
+            }}
+            isDark={isDark}
+        >
             <div className={MapStyle.Body + " flex flex-col"}>
                 <div>
                     <Popover placement="right">
@@ -141,6 +108,6 @@ export default function Map({wrapper, labels, datapoints}) {
                     }
                 </MapContainer>
             </div>
-        </div>
+        </Wrapper>
     );
 }

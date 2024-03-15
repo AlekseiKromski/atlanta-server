@@ -3,20 +3,6 @@
     z-index: 1;
 }
 
-.Wrapper{
-    padding: 15px;
-    border-radius: 15px;
-    background: #eaeaea!important;
-}
-
-.Header{
-    margin-bottom: 15px;
-}
-
-.Header h1{
-    font-weight: bold;
-}
-
 .Body {
     gap: 15px;
 }

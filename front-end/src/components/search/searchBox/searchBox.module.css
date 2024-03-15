@@ -1,18 +1,3 @@
-.SearchBox{
-    background: #f7f7f7;
-    padding: 15px;
-    border-radius: 16px;
-    width: 70%;
-}
-
-.Header{
-    margin-bottom: 15px;
-}
-
-.Header h1 {
-    font-weight: bold;
-}
-
 .SelectDatapointType {
     margin-top: 15px;
 }
