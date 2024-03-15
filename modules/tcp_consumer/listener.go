@@ -1,6 +1,8 @@
 package tcp_consumer
 
 import (
+	"alekseikromski.com/atlanta/core"
+	"encoding/json"
 	"net"
 	"strings"
 )
@@ -47,10 +49,21 @@ func (s *Server) handle(conn net.Conn) {
 		return
 	}
 
-	if err := s.storage.SaveDatapoints(deviceUuid, datapoints); err != nil {
+	dps, err := s.storage.SaveDatapoints(deviceUuid, datapoints)
+	if err != nil {
 		s.Log("cannot save datapoints", err.Error())
 		return
 	}
 
+	payload, err := json.Marshal(&dps)
+	if err != nil {
+		s.Log("cannot marshal datapoints", err.Error())
+		return
+	}
+
+	s.eventBusChannel <- core.BusEvent{
+		Receiver: "gin_server",
+		Payload:  string(payload),
+	}
 	s.EventBus <- message
 }

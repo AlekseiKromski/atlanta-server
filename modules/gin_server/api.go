@@ -1,8 +1,11 @@
 package gin_server
 
-import "github.com/gin-gonic/gin"
+import (
+	"embed"
+	"github.com/gin-gonic/gin"
+)
 
 type Api interface {
-	RegisterRoutes() error
+	RegisterRoutes(resources embed.FS) error
 	GetEngine() *gin.Engine
 }

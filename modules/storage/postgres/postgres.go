@@ -37,7 +37,7 @@ func NewPostgres(config *Config) *Postgres {
 	}
 }
 
-func (p *Postgres) Start(notifyChannel chan struct{}, requirements map[string]core.Module) {
+func (p *Postgres) Start(notifyChannel chan struct{}, eventBusChannel chan core.BusEvent, requirements map[string]core.Module) {
 	psqlCredits := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		p.config.host,

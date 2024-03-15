@@ -4,12 +4,16 @@ import (
 	"alekseikromski.com/atlanta/core"
 	"alekseikromski.com/atlanta/modules/storage/postgres"
 	"fmt"
+	"github.com/stretchr/testify/assert"
+	"log"
 	"net"
 	"testing"
+	"time"
 )
 
 func TestConnection(t *testing.T) {
 	notifyChannel := make(chan struct{}, 1)
+	busEventChannel := make(chan core.BusEvent, 1)
 	postgres := postgres.NewPostgres(
 		postgres.NewConfig(
 			"localhost",
@@ -19,7 +23,8 @@ func TestConnection(t *testing.T) {
 			5432,
 		),
 	)
-	go postgres.Start(notifyChannel, map[string]core.Module{})
+
+	go postgres.Start(notifyChannel, busEventChannel, map[string]core.Module{})
 	<-notifyChannel
 	defer postgres.Stop()
 
@@ -31,7 +36,7 @@ func TestConnection(t *testing.T) {
 	)
 
 	// Start & wait server
-	go tcpServer.Start(notifyChannel, map[string]core.Module{
+	go tcpServer.Start(notifyChannel, busEventChannel, map[string]core.Module{
 		"storage": postgres,
 	})
 	<-notifyChannel
@@ -56,5 +61,25 @@ func TestConnection(t *testing.T) {
 	if content != <-tcpServer.EventBus {
 		t.Fatalf("server received unexpected data: %s", content)
 		return
+	}
+
+	event := <-tcpServer.eventBusChannel
+	assert.Equal(t, "gin_server", event.Receiver)
+}
+
+func Test(t *testing.T) {
+	for {
+		conn, err := net.Dial("tcp", "localhost:3017")
+		if err != nil {
+			log.Println(err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		_, err = conn.Write([]byte("DEVICE::3cc76ff4-cbaa-436c-b727-45d526facfc7;HUM::43.00;TEMP::18.00;PRS::101738;ALT2::-34.91;TEMP2::16.50;GEO::59.337040,27.420391;TIME::" + time.Now().Format(time.RFC3339) + ";ALT::5.00"))
+		if err != nil {
+			log.Println(err)
+		}
+		conn.Close()
+		time.Sleep(5 * time.Second)
 	}
 }

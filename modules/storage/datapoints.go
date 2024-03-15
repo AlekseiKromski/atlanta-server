@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"alekseikromski.com/atlanta/models"
 	"github.com/google/uuid"
 	"time"
 )
@@ -19,6 +20,7 @@ type Datapoint struct {
 }
 
 type StorageDatapoint interface {
+	SaveDatapoints(deviceUuid string, datapoints []models.DataPoints) ([]*Datapoint, error) // SaveDatapoints - Save datapoint to database
 	GetAllDatapoints() ([]*Datapoint, error)
 	FindDatapoints(fd *FindDatapointsRequest) ([]*Datapoint, []string, error)
 	FindAllLabels() ([]string, error)

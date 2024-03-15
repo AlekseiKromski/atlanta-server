@@ -8,11 +8,12 @@ import (
 )
 
 type Server struct {
-	EventBus chan string
-	config   *ServerConfig
-	listener net.Listener
-	parser   *datapoints_parser.DataPointsParser
-	storage  storage.Storage
+	EventBus        chan string
+	config          *ServerConfig
+	listener        net.Listener
+	parser          *datapoints_parser.DataPointsParser
+	storage         storage.Storage
+	eventBusChannel chan core.BusEvent
 }
 
 func NewServer(conf *ServerConfig) *Server {
@@ -23,7 +24,9 @@ func NewServer(conf *ServerConfig) *Server {
 	}
 }
 
-func (s *Server) Start(notifyChannel chan struct{}, requirements map[string]core.Module) {
+func (s *Server) Start(notifyChannel chan struct{}, eventBusChannel chan core.BusEvent, requirements map[string]core.Module) {
+	s.eventBusChannel = eventBusChannel
+
 	// Load requirements
 	storage, err := s.getStorageFromRequirement(requirements)
 	if err != nil {
