@@ -1,0 +1,12 @@
+.LiveBody{
+    padding: 15px;
+    gap: 15px;
+}
+
+.Wrapper {
+    gap: inherit;
+}
+
+.LiveTabs {
+    min-height: 700px;
+}

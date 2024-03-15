@@ -8,7 +8,11 @@ export default function Sidebar() {
                    isActive ? SidebarStyle.Active : ""
                }
                to="/datapoints/search">Search datapoints</NavLink>
-           <NavLink to="/datapoints/live">Live datapoints</NavLink>
+           <NavLink
+               className={({ isActive }) =>
+                   isActive ? SidebarStyle.Active : ""
+               }
+               to="/datapoints/live">Live datapoints</NavLink>
            <NavLink to="/devices">Devices</NavLink>
            <NavLink to="/settings">Settings</NavLink>
         </div>

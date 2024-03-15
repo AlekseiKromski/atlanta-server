@@ -21,7 +21,7 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-export default function Map({labels, datapoints}) {
+export default function Map({wrapper, labels, datapoints}) {
     datapoints = datapoints.data.datapoints
 
     const position = [59.3573116, 27.4136646]
@@ -45,7 +45,7 @@ export default function Map({labels, datapoints}) {
     })
 
     return (
-        <div>
+        <div className={wrapper ? MapStyle.Wrapper : ""}>
             <div className={MapStyle.Header + " flex justify-between items-center rounded-md"}>
                 <h1 className="font-bold">Map view</h1>
                 <Button size="sm" color="primary" variant="light" onPress={onOpen}>Help</Button>

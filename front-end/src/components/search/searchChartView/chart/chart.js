@@ -11,7 +11,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import ChartStyle from "./charts.module.css"
-import MapStyle from "../map/map.module.css";
 import {
     Button,
     Modal,
@@ -37,7 +36,7 @@ function random(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-export default function Chart({labels, datapoints}) {
+export default function Chart({wrapper, labels, datapoints}) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
     datapoints = datapoints.data
@@ -85,13 +84,13 @@ export default function Chart({labels, datapoints}) {
             return
         }
 
-        if (currentLength !== lastLength ){
+        if (currentLength !== lastLength){
             result = false
         }
     })
 
     return (
-        <div>
+        <div className={wrapper ? ChartStyle.Wrapper : ""}>
             <div className={ChartStyle.Header + " flex justify-between items-center rounded-md"}>
                 <h1 className="font-bold">Chart view</h1>
                 <Button size="sm" color="primary" variant="light" onPress={onOpen}>Help</Button>

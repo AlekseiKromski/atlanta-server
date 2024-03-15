@@ -1,0 +1,34 @@
+.Main {
+    background: #f7f7f7;
+    padding: 15px;
+    border-radius: 16px;
+    height: fit-content;
+}
+
+.Wrapper{
+    padding: 15px;
+    border-radius: 15px;
+    background: #eaeaea!important;
+}
+
+.Header{
+    margin-bottom: 15px;
+}
+
+.Header h1 {
+    font-weight: bold;
+}
+
+.Body {
+    height: fit-content;
+}
+
+.Table {
+    display: block;
+    height: 350px;
+    overflow-y: scroll;
+}
+
+.Footer{
+    margin-top: 15px;
+}

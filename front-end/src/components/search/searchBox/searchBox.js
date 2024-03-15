@@ -9,11 +9,14 @@ import {
     ModalHeader, Select, SelectItem,
     useDisclosure
 } from "@nextui-org/react";
-import {useEffect, useState} from "react";
-import axios from "axios";
+import {useState} from "react";
+import {useSelector} from "react-redux"
 import moment from "moment"
 
 export default function SearchBox({labels, callback}) {
+
+    const application = useSelector((state) => state.application);
+
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
     const [selectedDatapointTypes, setSelectedDatapointTypes] = useState([])
@@ -29,7 +32,7 @@ export default function SearchBox({labels, callback}) {
 
         let start = startDate !== "" ? moment(startDate).format().split("+")[0] + "Z" : null
         let end = endDate !== "" ? moment(endDate).format().split("+")[0] + "Z" : null
-        axios.post(`http://localhost:3000/datapoints/find`, {
+        application.axios.post(`/api/datapoints/find`, {
             start: start,
             end: end,
             select: selectedDatapointTypes,

@@ -5,3 +5,9 @@
 .Header {
     font-weight: bold;
 }
+
+.Wrapper{
+    padding: 15px;
+    border-radius: 15px;
+    background: #eaeaea!important;
+}

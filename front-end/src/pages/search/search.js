@@ -3,20 +3,21 @@ import SearchBox from "../../components/search/searchBox/searchBox";
 import SearchHistory from "../../components/search/searchHistory/searchHistory";
 import SearchChartView from "../../components/search/searchChartView/searchChartView";
 import {useEffect, useState} from "react";
-import axios from "axios";
-import {log10} from "chart.js/helpers";
+import {useSelector} from "react-redux"
 export default function Search() {
+
+    const application = useSelector((state) => state.application);
+
     const [datapoints, setDatapoints] = useState({
         type: "",
         data: []
     })
     const [labels, setLabels] = useState([])
 
-
     const searchResult = (data) => setDatapoints(data)
 
     useEffect(() => {
-        axios.get("http://localhost:3000/datapoints/info/labels")
+        application.axios.get("/api/datapoints/info/labels")
             .then(res => setLabels(res.data))
             .catch(e => console.log(e))
     }, []);
