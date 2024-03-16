@@ -38,11 +38,12 @@ func (s *Server) handle(conn net.Conn) {
 
 	s.Log("received", message)
 
-	deviceUuid, datapoints, err := s.parser.Parse(message)
+	deviceUuid, datapoints, last_measurement_time, err := s.parser.Parse(s.last_measurement_time, message)
 	if err != nil {
 		s.Log("cannot parse message: ", err.Error(), message)
 		return
 	}
+	s.last_measurement_time = last_measurement_time
 
 	if len(deviceUuid) == 0 {
 		s.Log("empty device id, ignored", message)

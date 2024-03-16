@@ -5,22 +5,25 @@ import (
 	"alekseikromski.com/atlanta/core"
 	"alekseikromski.com/atlanta/modules/storage"
 	"net"
+	"time"
 )
 
 type Server struct {
-	EventBus        chan string
-	config          *ServerConfig
-	listener        net.Listener
-	parser          *datapoints_parser.DataPointsParser
-	storage         storage.Storage
-	eventBusChannel chan core.BusEvent
+	EventBus              chan string
+	config                *ServerConfig
+	listener              net.Listener
+	parser                *datapoints_parser.DataPointsParser
+	storage               storage.Storage
+	eventBusChannel       chan core.BusEvent
+	last_measurement_time time.Time
 }
 
 func NewServer(conf *ServerConfig) *Server {
 	return &Server{
-		EventBus: make(chan string, 1),
-		config:   conf,
-		parser:   datapoints_parser.NewDataPointsParser(),
+		EventBus:              make(chan string, 1),
+		config:                conf,
+		parser:                datapoints_parser.NewDataPointsParser(),
+		last_measurement_time: time.Now(),
 	}
 }
 
