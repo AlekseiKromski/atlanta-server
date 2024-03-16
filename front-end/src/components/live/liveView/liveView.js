@@ -20,6 +20,10 @@ export default function LiveView({datapoints, device, labels}) {
             map[dp.label] = [...map[dp.label], dp]
         })
 
+        for (const [key, value] of Object.entries(map)) {
+            map[key] = value.reverse()
+        }
+
         return map
     }
 
