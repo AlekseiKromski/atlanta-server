@@ -57,4 +57,14 @@ func (g *GeoDataPoint) ToArguments() []any {
 	}
 }
 
-func (g *GeoDataPoint) Validate() {}
+func (g *GeoDataPoint) Validate() {
+	if g.Lat.Value == 0.0 {
+		g.Flags = append(g.Flags, "ignored")
+		return
+	}
+
+	if g.Lon.Value == 0.0 {
+		g.Flags = append(g.Flags, "ignored")
+		return
+	}
+}
