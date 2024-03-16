@@ -147,6 +147,28 @@ func (dpp *DataPointsParser) validateTime(last_measurement_time, measurement_tim
 		return false
 	}
 
+	now := time.Now().UTC()
+
+	if now.Year() != measurement_time.Year() {
+		return false
+	}
+
+	if now.Month() != measurement_time.Month() {
+		return false
+	}
+
+	if now.Day() != measurement_time.Day() {
+		return false
+	}
+
+	if now.Hour() != measurement_time.Hour() {
+		return false
+	}
+
+	if now.Minute() != measurement_time.Minute() {
+		return false
+	}
+
 	return true
 }
 
