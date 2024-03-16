@@ -15,8 +15,8 @@ func NewDataPointsParser() *DataPointsParser {
 	return &DataPointsParser{}
 }
 
-// DEVICE::3cc76ff4-cbaa-436c-b727-45d526facfc7;TIME::2019-10-12T07:20:50.52Z;TEMP::14C;PRS::1000PA
-func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, error) {
+// DEVICE::3cc76ff4-cbaa-436c-b727-45d526facfc7;TIME::2019-10-12T07:20:50:52Z;TEMP::14C;PRS::1000PA
+func (dpp *DataPointsParser) Parse(last_measurement_time time.Time, data string) (string, []models.DataPoints, time.Time, error) {
 	data = strings.TrimSuffix(data, "\n")
 	data = strings.TrimSuffix(data, "\r")
 	var datapoints []models.DataPoints
@@ -27,15 +27,15 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 	incomingTime := incomingDatapoints["TIME"]
 	parsedTime, err := dpp.parseTime(incomingTime)
 	if err != nil {
-		return deviceUuid, nil, fmt.Errorf("cannot parse time. Reason: %v", data)
+		return deviceUuid, nil, time.Now(), fmt.Errorf("cannot parse time. Reason: %v", data)
 	}
 	measurementTime, err := time.Parse(time.RFC3339, parsedTime)
 	if err != nil {
-		return deviceUuid, nil, fmt.Errorf("cannot parse time in data: %s. Reason: %v", data, err)
+		return deviceUuid, nil, time.Now(), fmt.Errorf("cannot parse time in data: %s. Reason: %v", data, err)
 	}
 
 	// if date is not valid from device, let's set correct date
-	if ok := dpp.validateTime(measurementTime); !ok {
+	if ok := dpp.validateTime(last_measurement_time, measurementTime); !ok {
 		measurementTime = time.Now().UTC()
 	}
 
@@ -48,7 +48,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		case "TEMP":
 			td := &models.TemperatureData{}
 			if err := td.ParseFromString(val, measurementTime); err != nil {
-				return deviceUuid, nil, fmt.Errorf("cannot parse temperature string: %v", err)
+				return deviceUuid, nil, measurementTime, fmt.Errorf("cannot parse temperature string: %v", err)
 			}
 
 			td.Validate()
@@ -57,7 +57,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		case "TEMP2":
 			td := &models.TemperatureData{}
 			if err := td.ParseFromString(val, measurementTime); err != nil {
-				return deviceUuid, nil, fmt.Errorf("cannot parse temperature string: %v", err)
+				return deviceUuid, nil, measurementTime, fmt.Errorf("cannot parse temperature string: %v", err)
 			}
 
 			td.Label = "BMP180 TEMP"
@@ -68,7 +68,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		case "GEO":
 			gd := &models.GeoDataPoint{}
 			if err := gd.ParseFromString(val, measurementTime); err != nil {
-				return deviceUuid, nil, fmt.Errorf("cannot parse geo string: %v", err)
+				return deviceUuid, nil, measurementTime, fmt.Errorf("cannot parse geo string: %v", err)
 			}
 
 			gd.Validate()
@@ -77,7 +77,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		case "PRS":
 			pd := &models.PressureData{}
 			if err := pd.ParseFromString(val, measurementTime); err != nil {
-				return deviceUuid, nil, fmt.Errorf("cannot parse pressure string: %v", err)
+				return deviceUuid, nil, measurementTime, fmt.Errorf("cannot parse pressure string: %v", err)
 			}
 
 			pd.Validate()
@@ -86,7 +86,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		case "ALT":
 			ad := &models.AltitudeData{}
 			if err := ad.ParseFromString(val, measurementTime); err != nil {
-				return deviceUuid, nil, fmt.Errorf("cannot parse altitude string: %v", err)
+				return deviceUuid, nil, measurementTime, fmt.Errorf("cannot parse altitude string: %v", err)
 			}
 
 			ad.Validate()
@@ -95,7 +95,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		case "ALT2":
 			ad := &models.AltitudeData{}
 			if err := ad.ParseFromString(val, measurementTime); err != nil {
-				return deviceUuid, nil, fmt.Errorf("cannot parse altitude string: %v", err)
+				return deviceUuid, nil, measurementTime, fmt.Errorf("cannot parse altitude string: %v", err)
 			}
 
 			ad.Label = "BMP180 Altitude"
@@ -105,7 +105,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		case "HUM":
 			hd := &models.HumidityData{}
 			if err := hd.ParseFromString(val, measurementTime); err != nil {
-				return deviceUuid, nil, fmt.Errorf("cannot parse humidity string: %v", err)
+				return deviceUuid, nil, measurementTime, fmt.Errorf("cannot parse humidity string: %v", err)
 			}
 
 			hd.Validate()
@@ -116,7 +116,7 @@ func (dpp *DataPointsParser) Parse(data string) (string, []models.DataPoints, er
 		}
 	}
 
-	return deviceUuid, datapoints, nil
+	return deviceUuid, datapoints, measurementTime, nil
 }
 
 func (dpp *DataPointsParser) parseTime(timeData string) (string, error) {
@@ -142,22 +142,8 @@ func (dpp *DataPointsParser) parseTime(timeData string) (string, error) {
 }
 
 // validateTime - check that we have correct year, month, day, hour
-func (dpp *DataPointsParser) validateTime(timeData time.Time) bool {
-	now := time.Now().UTC()
-
-	if now.Year() != timeData.Year() {
-		return false
-	}
-
-	if now.Month() != timeData.Month() {
-		return false
-	}
-
-	if now.Day() != timeData.Day() {
-		return false
-	}
-
-	if now.Hour() != timeData.Hour() {
+func (dpp *DataPointsParser) validateTime(last_measurement_time, measurement_time time.Time) bool {
+	if last_measurement_time == measurement_time {
 		return false
 	}
 
