@@ -44,7 +44,7 @@ func (h *HumidityData) ToArguments() []any {
 }
 
 func (h *HumidityData) Validate() {
-	if h.Humidity.Value > 80.00 || h.Humidity.Value < 20 {
+	if h.Humidity.Value > 100.00 || h.Humidity.Value < 20 {
 		h.Flags = append(h.Flags, "ignored")
 	}
 }
