@@ -7,6 +7,7 @@ type FindDatapointsRequest struct {
 	End     *time.Time `json:"end"`
 	Select  []string   `json:"select"`
 	Ignored bool       `json:"ignored"`
+	Device  string     `json:"device"`
 }
 
 func (fd *FindDatapointsRequest) Validate() bool {

@@ -24,4 +24,5 @@ type StorageDatapoint interface {
 	GetAllDatapoints() ([]*Datapoint, error)
 	FindDatapoints(fd *FindDatapointsRequest) ([]*Datapoint, []string, error)
 	FindAllLabels() ([]string, error)
+	FindAllDevices() ([]*Device, error)
 }

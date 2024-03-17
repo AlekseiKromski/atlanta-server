@@ -71,6 +71,8 @@ func (p *Postgres) FindDatapoints(fd *storage.FindDatapointsRequest) ([]*storage
 		query += "AND flags != 'ignored' "
 	}
 
+	query += fmt.Sprintf("AND deviceUuid = '%s'", fd.Device)
+
 	rows, err := p.db.Query(query, fd.Start.Format(time.RFC3339), fd.End.Format(time.RFC3339))
 	if err != nil {
 		return nil, nil, fmt.Errorf("cannot find datapoints: %v", err)
@@ -141,4 +143,26 @@ func (p *Postgres) FindAllLabels() ([]string, error) {
 	}
 
 	return labels, nil
+}
+
+func (p *Postgres) FindAllDevices() ([]*storage.Device, error) {
+	query := "SELECT id, description FROM devices ORDER BY created_at DESC"
+
+	rows, err := p.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get all unique labels: %v", err)
+	}
+	defer rows.Close()
+
+	devices := []*storage.Device{}
+	for rows.Next() {
+		device := &storage.Device{}
+		err := rows.Scan(&device.Id, &device.Description)
+		if err != nil {
+			return nil, fmt.Errorf("cannot read response from database: %v", err)
+		}
+		devices = append(devices, device)
+	}
+
+	return devices, nil
 }
