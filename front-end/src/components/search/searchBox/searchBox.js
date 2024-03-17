@@ -1,21 +1,18 @@
 import SearchBoxStyle from "./searchBox.module.css"
-import {
-    Button, Checkbox,
-    Input,
-    Select, SelectItem
-} from "@nextui-org/react";
+import {Button, Checkbox, Chip, Input, Select, SelectItem} from "@nextui-org/react";
 import {useState} from "react";
 import {useSelector} from "react-redux"
 import moment from "moment"
 import Wrapper from "../../common/wrapper/wrapper";
 
-export default function SearchBox({labels, callback}) {
+export default function SearchBox({labels, devices, callback}) {
 
     const application = useSelector((state) => state.application);
 
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
     const [selectedDatapointTypes, setSelectedDatapointTypes] = useState([])
+    const [selectedDevice, setSelectedDevice] = useState("")
     const [showType, setShowType] = useState("")
     const [ignored, setIgnored] = useState(false)
     const [loader, setLoader] = useState(false)
@@ -29,6 +26,7 @@ export default function SearchBox({labels, callback}) {
             start: start,
             end: end,
             select: selectedDatapointTypes,
+            device: selectedDevice,
             ignored: ignored
         })
             .then(res => {
@@ -74,14 +72,14 @@ export default function SearchBox({labels, callback}) {
                             value={endDate}
                         />
                     </div>
-                    <div className={ SearchBoxStyle.SelectDatapointType + " flex w-full gap-1.5 flex-col"}>
+                    <div className={SearchBoxStyle.SelectDatapointType + " flex w-full gap-1.5 flex-col"}>
                         <Select
                             label="Select datapoint type"
                             selectionMode="multiple"
                             className="max-w-max"
                             selectedKeys={selectedDatapointTypes}
                             onChange={e => {
-                                if (e.target.value.search("all") !== -1 ) {
+                                if (e.target.value.search("all") !== -1) {
 
                                     // If all labels already set, we should remove it
                                     if (selectedDatapointTypes.length == labels.length) {
@@ -97,19 +95,47 @@ export default function SearchBox({labels, callback}) {
                                 setSelectedDatapointTypes(values)
                             }}
                         >
-                            <SelectItem selected  key="all" value="all">
+                            <SelectItem selected key="all" value="all">
                                 All
                             </SelectItem>
                             {
                                 labels && labels.map(label => (
-                                    <SelectItem selected  key={label} value={label}>
+                                    <SelectItem selected key={label} value={label}>
                                         {label}
                                     </SelectItem>
                                 ))
                             }
                         </Select>
                     </div>
-                    <div className={ SearchBoxStyle.SelectDatapointType + " flex w-full gap-1.5"}>
+                    <div className={SearchBoxStyle.SelectDatapointType + " flex flex-col w-full gap-1.5"}>
+                        {
+                            <Select
+                                label="Select device"
+                                className="max-w-max"
+                                onChange={e => setSelectedDevice(e.target.value)}
+                                selectedKeys={[selectedDevice]}
+                            >
+                                {
+                                    devices.map(device => (
+                                        <SelectItem key={device.id} value={device.id}>
+                                            {device.id}
+                                        </SelectItem>
+                                    ))
+                                }
+                            </Select>
+                        }
+
+                        {
+                            selectedDevice &&
+                            <div>
+                                <Chip color="warning" variant="bordered">
+                                    Selected: {devices.find(d => d.id === selectedDevice).description}
+                                </Chip>
+                            </div>
+                        }
+
+                    </div>
+                    <div className={SearchBoxStyle.SelectDatapointType + " flex w-full gap-1.5"}>
                         <Select
                             label="Select show type"
                             className="max-w-xs"
@@ -124,8 +150,9 @@ export default function SearchBox({labels, callback}) {
                             </SelectItem>
                         </Select>
                     </div>
-                    <div className={ SearchBoxStyle.SelectDatapointType + " flex w-full gap-1.5"}>
-                        <Checkbox isSelected={ignored} onChange={e => setIgnored(e.target.checked)} color="warning">With ignored</Checkbox>
+                    <div className={SearchBoxStyle.SelectDatapointType + " flex w-full gap-1.5"}>
+                        <Checkbox isSelected={ignored} onChange={e => setIgnored(e.target.checked)} color="warning">With
+                            ignored</Checkbox>
                     </div>
                 </div>
                 <div className="flex justify-end gap-1">
@@ -145,13 +172,13 @@ export default function SearchBox({labels, callback}) {
                     </Button>
 
                     <Button isDisabled={
-                        startDate === "" || endDate == "" || selectedDatapointTypes.length === 0 || showType === ""
+                        startDate === "" || endDate == "" || selectedDatapointTypes.length === 0 || showType === "" || selectedDevice == ""
                     } isLoading={loader} color="success" variant="flat" onClick={find}>
                         Save query
                     </Button>
 
                     <Button isDisabled={
-                        startDate === "" || endDate == "" || selectedDatapointTypes.length === 0 || showType === ""
+                        startDate === "" || endDate == "" || selectedDatapointTypes.length === 0 || showType === "" || selectedDevice == ""
                     } isLoading={loader} color="secondary" onClick={find}>
                         Find
                     </Button>
