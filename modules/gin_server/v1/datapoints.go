@@ -75,3 +75,16 @@ func (v *V1) GetAllLabels(store storage.Storage) func(c *gin.Context) {
 		c.JSON(200, labels)
 	}
 }
+
+func (v *V1) GetAllDevices(store storage.Storage) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		devices, err := store.FindAllDevices()
+		if err != nil {
+			v.log("cannot find all devices", err.Error())
+			c.JSON(400, NewErrorResponse("cannot find all devices"))
+			return
+		}
+
+		c.JSON(200, devices)
+	}
+}
