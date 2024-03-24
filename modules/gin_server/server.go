@@ -58,7 +58,7 @@ func (s *Server) Start(notifyChannel chan struct{}, busEventChannel chan core.Bu
 		return
 	}
 
-	s.ws, err = ws.NewWebSocket(s.api.GetEngine(), s.config.Secret)
+	s.ws, err = ws.NewWebSocket(s.api.GetEngine(), s.config.Secret, s.api.GetGuard())
 	if err != nil {
 		s.Log("cannot start websocket server", err.Error())
 		return
