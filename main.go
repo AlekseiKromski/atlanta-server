@@ -23,6 +23,8 @@ func main() {
 		return
 	}
 
+	ginCookieDomain := os.Getenv("GIN_COOKIE_DOMAIN")
+
 	ginAddress := os.Getenv("GIN_ADDRESS")
 	ginSecret := os.Getenv("GIN_SECRET")
 	tcpConsumerAddress := os.Getenv("TCP_CONSUMER_ADDRESS")
@@ -46,7 +48,7 @@ func main() {
 	c := core.NewCore()
 	c.Init([]core.Module{
 		gin_server.NewServer(
-			gin_server.NewServerConfig(ginSecret, ginAddress),
+			gin_server.NewServerConfig(ginSecret, ginAddress, ginCookieDomain),
 			resources,
 		),
 		tcp_consumer.NewServer(

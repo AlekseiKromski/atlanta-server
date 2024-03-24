@@ -19,21 +19,23 @@ type authRequest struct {
 }
 
 type Guard struct {
-	secret      []byte
-	permissions map[string][]*storage.Endpoint
-	store       storage.Storage
+	secret       []byte
+	permissions  map[string][]*storage.Endpoint
+	store        storage.Storage
+	cookieDomain string
 }
 
-func NewGuard(secret []byte, store storage.Storage) *Guard {
+func NewGuard(secret []byte, store storage.Storage, cookieDomain string) *Guard {
 	permissions, err := store.GetPermissions()
 	if err != nil {
 		log.Printf("cannot get permissions: %v", err)
 	}
 
 	return &Guard{
-		secret:      secret,
-		store:       store,
-		permissions: permissions,
+		secret:       secret,
+		store:        store,
+		permissions:  permissions,
+		cookieDomain: cookieDomain,
 	}
 }
 
@@ -70,7 +72,7 @@ func (g *Guard) Auth(c *gin.Context) {
 	}
 
 	if ar.Type == "cookie" {
-		c.SetCookie("token", tokenString, 3600, "/", "localhost", false, true)
+		c.SetCookie("token", tokenString, 3600, "/", g.cookieDomain, true, true)
 	} else {
 		c.JSON(http.StatusOK, struct {
 			Token string `json:"token"`

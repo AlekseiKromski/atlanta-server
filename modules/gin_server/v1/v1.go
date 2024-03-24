@@ -19,13 +19,13 @@ type V1 struct {
 	guard   *guard.Guard
 }
 
-func NewV1Api(storage storage.Storage, secret []byte, log func(messages ...string)) *V1 {
+func NewV1Api(storage storage.Storage, secret []byte, cookieDomain string, log func(messages ...string)) *V1 {
 	return &V1{
 		router:  gin.Default(),
 		storage: storage,
 		log:     log,
 		secret:  secret,
-		guard:   guard.NewGuard(secret, storage),
+		guard:   guard.NewGuard(secret, storage, cookieDomain),
 	}
 }
 

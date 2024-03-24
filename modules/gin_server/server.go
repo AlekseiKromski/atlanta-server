@@ -12,14 +12,16 @@ import (
 )
 
 type ServerConfig struct {
-	Address string
-	Secret  []byte
+	Address      string
+	Secret       []byte
+	CookieDomain string
 }
 
-func NewServerConfig(secret string, address string) *ServerConfig {
+func NewServerConfig(secret string, address string, cookieDomain string) *ServerConfig {
 	return &ServerConfig{
-		Address: address,
-		Secret:  []byte(secret),
+		Address:      address,
+		Secret:       []byte(secret),
+		CookieDomain: cookieDomain,
 	}
 }
 
@@ -51,7 +53,7 @@ func (s *Server) Start(notifyChannel chan struct{}, busEventChannel chan core.Bu
 		return
 	}
 
-	s.api = v1.NewV1Api(storage, s.config.Secret, s.Log)
+	s.api = v1.NewV1Api(storage, s.config.Secret, s.config.CookieDomain, s.Log)
 
 	if err := s.api.RegisterRoutes(s.resources); err != nil {
 		log.Printf("HTTP Server: %s", err)
