@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"alekseikromski.com/atlanta/modules/gin_server/guard"
 	"fmt"
 	"github.com/AlekseiKromski/at-socket-server/core"
 	"github.com/gin-gonic/gin"
@@ -11,11 +12,16 @@ type WebSocket struct {
 	app *core.App
 }
 
-func NewWebSocket(engine *gin.Engine, secret []byte) (*WebSocket, error) {
-	app, err := core.Start(engine, &core.Handlers{}, &core.Config{
-		JwtSecret: secret,
-		Debug:     true,
-	})
+func NewWebSocket(engine *gin.Engine, secret []byte, guard *guard.Guard) (*WebSocket, error) {
+	app, err := core.Start(
+		engine,
+		&core.Handlers{},
+		guard.Check,
+		&core.Config{
+			JwtSecret: secret,
+			Debug:     true,
+		},
+	)
 	if err != nil {
 		return nil, fmt.Errorf("cannot start websocket server: %v", err)
 	}
