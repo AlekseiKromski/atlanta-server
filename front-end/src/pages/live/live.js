@@ -26,7 +26,7 @@ export default function Live() {
 
     function connect() {
         let connect = new WebSocket(
-            process.env.REACT_APP_WEBSOCKET_URL + "/ws/connect?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTEyMDIzMzQsImlkIjoidGVzdC11c2VyLWlkIn0.BRiX9d94lyt-AKgu4Oul-Oje44v98tVCIUJsmFRoDDQ",
+            process.env.REACT_APP_WEBSOCKET_URL + "/ws/connect",
         )
         connect.onopen = e => {
             setConnected(true)
