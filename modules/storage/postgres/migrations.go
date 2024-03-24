@@ -62,31 +62,6 @@ var migrations = []*Migration{
 		)`,
 	},
 
-	// groups table
-	&Migration{
-		Name: "create_groups",
-		Sql: `
-		CREATE TABLE IF NOT EXISTS public.groups
-		(
-			id uuid NOT NULL DEFAULT gen_random_uuid(),
-			name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-			created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-			updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-			deleted_at timestamp with time zone DEFAULT NULL,
-			CONSTRAINT groups_PK PRIMARY KEY (id)
-		)`,
-	},
-
-	// insert default groups
-	&Migration{
-		Name: "insert_default_groups",
-		Sql: `
-		INSERT INTO groups (name) VALUES ('admin');
-		INSERT INTO groups (name) VALUES ('manager');
-		INSERT INTO groups (name) VALUES ('viewer');
-		`,
-	},
-
 	// users table
 	&Migration{
 		Name: "create_users",
@@ -107,37 +82,11 @@ var migrations = []*Migration{
 		)`,
 	},
 
-	// users table
-	&Migration{
-		Name: "create_groups_users",
-		Sql: `
-		CREATE TABLE IF NOT EXISTS public.groups_users
-		(
-			id uuid NOT NULL DEFAULT gen_random_uuid(),
-			userUuid uuid NOT NULL,
-			groupUuid uuid NOT NULL,
-		    CONSTRAINT groups_users_PK PRIMARY KEY (id),
-			CONSTRAINT groups_users_user_FK FOREIGN KEY (userUuid)
-				REFERENCES public.users (id) MATCH SIMPLE
-				ON UPDATE NO ACTION
-				ON DELETE NO ACTION,
-		   	CONSTRAINT groups_users_group_FK FOREIGN KEY (groupUuid)
-				REFERENCES public.groups (id) MATCH SIMPLE
-				ON UPDATE NO ACTION
-				ON DELETE NO ACTION
-		)`,
-	},
-
 	// insert admin user with admin group relation
 	&Migration{
 		Name: "insert_admin_user",
 		Sql: `
 		INSERT INTO users (username, first_name, second_name, image, email, password) VALUES ('admin', 'admin', 'admin', 'default_user.png', 'admin@admin.com', '');
-		INSERT INTO groups_users (useruuid, groupuuid)
-		VALUES (
-				(SELECT id FROM users WHERE username = 'admin' LIMIT 1),
-				(SELECT id FROM groups WHERE name = 'admin' LIMIT 1)
-			   )
 		`,
 	},
 
@@ -154,6 +103,90 @@ var migrations = []*Migration{
 		Name: "alter_label_field",
 		Sql: `
 		ALTER TABLE datapoints ADD label VARCHAR(50) DEFAULT NULL;
+		`,
+	},
+
+	// create roles table
+	&Migration{
+		Name: "create_roles_table",
+		Sql: `
+		CREATE TABLE IF NOT EXISTS public.roles
+		(
+			id uuid NOT NULL DEFAULT gen_random_uuid(),
+			name VARCHAR(50) NOT NULL,
+		    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			deleted_at timestamp with time zone DEFAULT NULL,
+			CONSTRAINT roles_PK PRIMARY KEY (id)
+		)
+		`,
+	},
+
+	// create default role
+	&Migration{
+		Name: "create_default_role",
+		Sql: `
+		INSERT INTO roles (id, name) VALUES ('9349e8e0-9f69-4a97-a47f-85d8d55a4776','default')
+		`,
+	},
+
+	// add role field to user with default role
+	&Migration{
+		Name: "alter_users_role_field",
+		Sql: `
+		ALTER TABLE users ADD role uuid NOT NULL DEFAULT '9349e8e0-9f69-4a97-a47f-85d8d55a4776';
+		`,
+	},
+
+	// add constraint to user -> role FK
+	&Migration{
+		Name: "alter_users_role_field_fk",
+		Sql: `
+			ALTER TABLE users ADD CONSTRAINT user_role_FK FOREIGN KEY (role)
+			REFERENCES public.roles (id) MATCH SIMPLE
+			ON UPDATE NO ACTION
+			ON DELETE NO ACTION;
+		`,
+	},
+
+	// create endpoints table
+	&Migration{
+		Name: "create_enpoints_table",
+		Sql: `
+		CREATE TABLE IF NOT EXISTS public.endpoints
+		(
+			id uuid NOT NULL DEFAULT gen_random_uuid(),
+			urn VARCHAR(300) NOT NULL,
+		    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			deleted_at timestamp with time zone DEFAULT NULL,
+			CONSTRAINT endpoints_PK PRIMARY KEY (id)
+		)
+		`,
+	},
+
+	// Create permission reference between endpoint and role
+	&Migration{
+		Name: "create_roles_endpoints",
+		Sql: `
+		CREATE TABLE IF NOT EXISTS public.roles_endpoints
+		(
+			id uuid NOT NULL DEFAULT gen_random_uuid(),
+			roleUuid uuid NOT NULL,
+			endpointUuid uuid NOT NULL,
+		    CONSTRAINT roles_endpoints_PK PRIMARY KEY (id),
+			CONSTRAINT roles_endpoints_role_FK FOREIGN KEY (roleUuid)
+				REFERENCES public.roles (id) MATCH SIMPLE
+				ON UPDATE NO ACTION
+				ON DELETE NO ACTION,
+		   	CONSTRAINT roles_endpoints_endpoint_FK FOREIGN KEY (endpointUuid)
+				REFERENCES public.endpoints (id) MATCH SIMPLE
+				ON UPDATE NO ACTION
+				ON DELETE NO ACTION,
+		    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			deleted_at timestamp with time zone DEFAULT NULL
+		)
 		`,
 	},
 }

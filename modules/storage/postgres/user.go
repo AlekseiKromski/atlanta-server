@@ -14,8 +14,8 @@ func (p *Postgres) CreateUser(user *storage.User) error {
 	return nil
 }
 
-func (p *Postgres) GetUser(id string) (*storage.User, error) {
-	rows, err := p.db.Query("SELECT username, first_name, second_name, image, email, password FROM users WHERE id = $1", id)
+func (p *Postgres) GetUserById(id string) (*storage.User, error) {
+	rows, err := p.db.Query("SELECT id, username, first_name, second_name, image, email, password, role FROM users WHERE id = $1 LIMIT 1", id)
 	if err != nil {
 		return nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
 	}
@@ -23,7 +23,25 @@ func (p *Postgres) GetUser(id string) (*storage.User, error) {
 
 	user := &storage.User{}
 	for rows.Next() {
-		err := rows.Scan(&user.Username, &user.First_name, &user.Second_name, &user.Image, &user.Email, &user.Password)
+		err := rows.Scan(&user.Id, &user.Username, &user.First_name, &user.Second_name, &user.Image, &user.Email, &user.Password, &user.Role)
+		if err != nil {
+			return nil, fmt.Errorf("cannot read response from database: %v", err)
+		}
+	}
+
+	return user, nil
+}
+
+func (p *Postgres) GetUserByUsername(username string) (*storage.User, error) {
+	rows, err := p.db.Query("SELECT id, username, first_name, second_name, image, email, password, role FROM users WHERE username = $1 LIMIT 1", username)
+	if err != nil {
+		return nil, fmt.Errorf("cannot send request to check migrations tables: %v", err)
+	}
+	defer rows.Close()
+
+	user := &storage.User{}
+	for rows.Next() {
+		err := rows.Scan(&user.Id, &user.Username, &user.First_name, &user.Second_name, &user.Image, &user.Email, &user.Password, &user.Role)
 		if err != nil {
 			return nil, fmt.Errorf("cannot read response from database: %v", err)
 		}
