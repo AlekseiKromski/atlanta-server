@@ -12,7 +12,7 @@ require (
 )
 
 require (
-	github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240313181429-383c5e127d55 // indirect
+	github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240324232016-2780305d55ef // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect

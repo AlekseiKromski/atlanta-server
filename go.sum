@@ -22,6 +22,8 @@ github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240313174801-921dc92c8f3c 
 github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240313174801-921dc92c8f3c/go.mod h1:LVp/ZothGTn5MYks2y9mMQq+obJlFQz74YlZE3NAnsM=
 github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240313181429-383c5e127d55 h1:rA3te/p3H3oJgON/5UJKWqBQ1ftVBs8NLJRL6EXE4mU=
 github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240313181429-383c5e127d55/go.mod h1:LVp/ZothGTn5MYks2y9mMQq+obJlFQz74YlZE3NAnsM=
+github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240324232016-2780305d55ef h1:21W/eP08v10pu0+5GmG+s+P8f18iLxk0CMwHzzZCVr0=
+github.com/AlekseiKromski/at-socket-server v1.2.5-0.20240324232016-2780305d55ef/go.mod h1:LVp/ZothGTn5MYks2y9mMQq+obJlFQz74YlZE3NAnsM=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.10.0-rc/go.mod h1:ElCzW+ufi8qKqNW0FY314xriJhyJhuoJ3gFZdAHF7NM=
 github.com/bytedance/sonic v1.10.2 h1:GQebETVBxYB7JGWJtLBi07OVzWwt+8dWA00gEVW2ZFE=
