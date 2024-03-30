@@ -1,0 +1,37 @@
+.Alert {
+    z-index: 999;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    max-width: 400px;
+}
+
+.Show{
+    transition: 0.6s;
+    animation: show 0.3s;
+}
+
+.Hide{
+    transition: 0.6s;
+    animation: hide 0.3s;
+}
+
+@keyframes show {
+    from {
+        transform: translateY(1000px);
+    }
+
+    to {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes hide {
+    from {
+        transform: translateY(0px);
+    }
+
+    to {
+        transform: translateY(1000px);
+    }
+}

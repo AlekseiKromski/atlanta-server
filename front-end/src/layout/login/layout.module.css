@@ -1,0 +1,11 @@
+.LoginRoot {
+    background: #1e2e3d;
+}
+.Login{
+    color: white;
+    gap: 15px;
+}
+.Login h1 {
+    font-weight: bold;
+    font-size: 1.5rem;
+}

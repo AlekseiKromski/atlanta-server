@@ -7,10 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"net/http"
 	"time"
 )
+
+type errorMessage struct {
+	Message string `json:"message"`
+}
+
+func newErrorMessage(message string) *errorMessage {
+	return &errorMessage{
+		Message: message,
+	}
+}
 
 type authRequest struct {
 	Username string `json:"username"`
@@ -23,12 +32,13 @@ type Guard struct {
 	permissions  map[string][]*storage.Endpoint
 	store        storage.Storage
 	cookieDomain string
+	log          func(messages ...string)
 }
 
-func NewGuard(secret []byte, store storage.Storage, cookieDomain string) *Guard {
+func NewGuard(log func(messages ...string), secret []byte, store storage.Storage, cookieDomain string) *Guard {
 	permissions, err := store.GetPermissions()
 	if err != nil {
-		log.Printf("cannot get permissions: %v", err)
+		log("cannot get permissions from database", err.Error())
 	}
 
 	return &Guard{
@@ -36,6 +46,7 @@ func NewGuard(secret []byte, store storage.Storage, cookieDomain string) *Guard 
 		store:        store,
 		permissions:  permissions,
 		cookieDomain: cookieDomain,
+		log:          log,
 	}
 }
 
@@ -50,12 +61,12 @@ func (g *Guard) Auth(c *gin.Context) {
 
 	user, err := g.store.GetUserByUsername(ar.Username)
 	if err != nil {
-		c.Status(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("user or password is not correct"))
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(ar.Password)); err != nil {
-		c.Status(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("user or password is not correct"))
 		return
 	}
 
@@ -67,7 +78,7 @@ func (g *Guard) Auth(c *gin.Context) {
 
 	tokenString, err := token.SignedString(g.secret)
 	if err != nil {
-		c.Status(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("cannot sign token"))
 		return
 	}
 
@@ -87,10 +98,7 @@ func (g *Guard) Auth(c *gin.Context) {
 func (g *Guard) Check(c *gin.Context) {
 	req := c.Request
 	tokenRequest := ""
-	t, err := c.Cookie("token")
-	if err != nil {
-		log.Printf("[JWTGUARD] there is problem to get token from cookies")
-	}
+	t, _ := c.Cookie("token")
 
 	if t != "" {
 		tokenRequest = t
@@ -103,8 +111,8 @@ func (g *Guard) Check(c *gin.Context) {
 
 	userID := ""
 	if tokenRequest == "" || len(tokenRequest) < 10 {
-		log.Printf("[JWTGUARD] there is not token in request: %s", req.URL.String())
-		c.AbortWithStatus(http.StatusUnauthorized)
+		g.log("there is not token in request", req.URL.String())
+		c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("cannot find token in request"))
 		return
 	}
 
@@ -128,20 +136,21 @@ func (g *Guard) Check(c *gin.Context) {
 	})
 
 	if err != nil {
-		log.Printf("[JWTGUARD] token verify failed: %v", err)
-		c.AbortWithStatus(http.StatusUnauthorized)
+		g.log("token verify failed", err.Error())
+		c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("token verification failed"))
+
 		return
 	}
 
 	if !token.Valid {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("token is not valid"))
 		return
 	}
 
 	user, err := g.store.GetUserById(userID)
 	if err != nil {
-		log.Printf("[JWTGUARD] cannot find user by id %s: %v", userID, err)
-		c.AbortWithStatus(http.StatusUnauthorized)
+		g.log("cannot find user by id:", userID, err.Error())
+		c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("token payload error"))
 		return
 	}
 
@@ -153,8 +162,8 @@ func (g *Guard) Check(c *gin.Context) {
 	}
 
 	if denied {
-		log.Printf("[JWTGUARD] access denied by permission restrictions. User role %s / rights: %s", user.Role, g.permissions[user.Role])
-		c.AbortWithStatus(http.StatusForbidden)
+		g.log("access denied by permission restrictions role/resource", user.Role, req.URL.String())
+		c.AbortWithStatusJSON(http.StatusForbidden, newErrorMessage("access denied by permission restrictions"))
 		return
 	}
 

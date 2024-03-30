@@ -6,7 +6,6 @@ import (
 	"alekseikromski.com/atlanta/modules/gin_server/ws"
 	"context"
 	"embed"
-	"log"
 	"net"
 	"net/http"
 )
@@ -42,21 +41,21 @@ func NewServer(conf *ServerConfig, resources embed.FS) *Server {
 }
 
 func (s *Server) Start(notifyChannel chan struct{}, busEventChannel chan core.BusEvent, requirements map[string]core.Module) {
-	log.Println("HTTP Server: init http server")
+	s.Log("init http server")
 
 	s.busEvent = busEventChannel
 	go s.listenEventBus()
 
 	storage, err := s.getStorageFromRequirement(requirements)
 	if err != nil {
-		log.Printf("HTTP Server: %s", err)
+		s.Log("cannot get storage requirement")
 		return
 	}
 
 	s.api = v1.NewV1Api(storage, s.config.Secret, s.config.CookieDomain, s.Log)
 
 	if err := s.api.RegisterRoutes(s.resources); err != nil {
-		log.Printf("HTTP Server: %s", err)
+		s.Log("cannot register routes")
 		return
 	}
 
@@ -69,7 +68,7 @@ func (s *Server) Start(notifyChannel chan struct{}, busEventChannel chan core.Bu
 	// Create tcp listener and server
 	listener, err := net.Listen("tcp", s.config.Address)
 	if err != nil {
-		log.Printf("HTTP Server: %s", err)
+		s.Log("cannot create tcp listener and server")
 		return
 	}
 	s.server = &http.Server{
@@ -81,14 +80,15 @@ func (s *Server) Start(notifyChannel chan struct{}, busEventChannel chan core.Bu
 
 	// Start server
 	if err := s.server.Serve(listener); err != nil {
-		log.Printf("HTTP Server: %s\n", err)
+		s.Log("cannot serve", err.Error())
 		return
 	}
 }
 
 func (s *Server) Stop() {
 	if err := s.server.Shutdown(context.Background()); err != nil {
-		log.Printf("HTTP: cannot stop server: %s", err)
+		s.Log("cannot stop server", err.Error())
+
 		return
 	}
 }

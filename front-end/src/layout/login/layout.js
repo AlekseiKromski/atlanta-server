@@ -1,10 +1,11 @@
 import {Outlet} from "react-router-dom"
+import LayoutStyle from "./layout.module.css"
 
 function Layout() {
     return (
-        <div class="flex flex-col h-full">
-            <div className="flex gap-4 w-full h-full">
-                <h1>Please login</h1>
+        <div className={LayoutStyle.LoginRoot + " flex flex-col h-full justify-center items-center dark text-foreground bg-background"}>
+            <div className={LayoutStyle.Login + " flex flex-col"}>
+                <h1>Welcome to Atlanta</h1>
                 <Outlet/>
             </div>
         </div>

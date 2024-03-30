@@ -22,7 +22,7 @@ const applicationSlice = createSlice({
                             // Use router.push() to navigate to the login screen
                             document.location = "/#login"
                             // Throw an exception to stop further execution
-                            return Promise.reject('Unauthorized');
+                            return Promise.reject(error.response.data.message);
                         }
                         // Handle other errors here
                         return Promise.reject(error);

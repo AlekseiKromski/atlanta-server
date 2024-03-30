@@ -4,6 +4,8 @@ import {useState} from "react";
 import {addToken} from "../../store/application/application";
 import {useNavigate} from "react-router-dom";
 import Cookies from 'js-cookie';
+import LoginStyle from "./login.module.css"
+import Alert from "../../components/ui/alert/alert";
 
 export default function Login() {
 
@@ -13,7 +15,7 @@ export default function Login() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [loader, setLoader] = useState(false)
-
+    const [alert, setAlert] = useState(null)
 
     const login = () => {
         setLoader(true)
@@ -32,18 +34,27 @@ export default function Login() {
                 setTimeout(() => setLoader(false), 1000)
             })
             .catch(e => {
-                console.log(e)
+                setAlert({
+                    type: "error",
+                    description: `Cannot login: ${e}`,
+                    link: "https://google.com"
+                })
                 setTimeout(() => setLoader(false), 1000)
+                setTimeout(() => setAlert(null), 9999000)
             })
     }
 
     return (
-        <div className="">
+        <div className={LoginStyle.Form + " flex flex-col"}>
             <Input onChange={(e) => setUsername(e.target.value)} type="text" label="Username" placeholder="Enter your username" />
             <Input onChange={(e) => setPassword(e.target.value)} type="password" label="Password" placeholder="Enter your password" />
-            <Button color="primary" onClick={login} isLoading={loader}>
+            <Button color="primary" variant="shadow" onClick={login} isLoading={loader}>
                 Login
             </Button>
+            {
+                alert &&
+                <Alert type={alert.type} description={alert.description} link={alert.link}/>
+            }
         </div>
     )
 }

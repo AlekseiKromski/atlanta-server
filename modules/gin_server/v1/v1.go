@@ -25,7 +25,7 @@ func NewV1Api(storage storage.Storage, secret []byte, cookieDomain string, log f
 		storage: storage,
 		log:     log,
 		secret:  secret,
-		guard:   guard.NewGuard(secret, storage, cookieDomain),
+		guard:   guard.NewGuard(log, secret, storage, cookieDomain),
 	}
 }
 
