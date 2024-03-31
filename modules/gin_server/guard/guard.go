@@ -184,6 +184,6 @@ func (g *Guard) Check(c *gin.Context) {
 }
 
 func (g *Guard) Logout(c *gin.Context) {
-	c.SetCookie("token", "", -1, "/", "localhost", true, true)
+	c.SetCookie("token", "", -1, "/", g.cookieDomain, true, true)
 	c.Status(http.StatusOK)
 }
