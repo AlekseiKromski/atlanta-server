@@ -56,7 +56,8 @@ func (v *V1) RegisterRoutes(resources embed.FS) error {
 		api.POST("/devices/upsert", v.UpsertDevice(v.storage))
 		api.GET("/devices/delete/:id", v.DeleteDevice(v.storage))
 
-		api.POST("/users/create", v.CreateUser(v.storage))
+		api.GET("/users/get", v.GetAllUsers(v.storage))
+		api.POST("/users/upsert", v.UpsertUser(v.storage))
 
 		api.GET("/auth/logout", v.guard.Logout)
 	}
