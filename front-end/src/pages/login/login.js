@@ -40,7 +40,7 @@ export default function Login() {
                     link: "https://google.com"
                 })
                 setTimeout(() => setLoader(false), 1000)
-                setTimeout(() => setAlert(null), 9999000)
+                setTimeout(() => setAlert(null), 5000)
             })
     }
 

@@ -12,6 +12,7 @@ import Live from "./pages/live/live";
 import {Provider} from 'react-redux';
 import store from "./store/store"
 import Login from "./pages/login/login";
+import Devices from "./pages/devices/devices";
 
 const router = createHashRouter([
     {
@@ -25,6 +26,9 @@ const router = createHashRouter([
             },
             {
                 path: "/datapoints/live", element: <Live/>,
+            },
+            {
+                path: "/devices", element: <Devices/>,
             }
         ],
     },

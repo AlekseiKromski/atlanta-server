@@ -146,7 +146,7 @@ func (p *Postgres) FindAllLabels() ([]string, error) {
 }
 
 func (p *Postgres) FindAllDevices() ([]*storage.Device, error) {
-	query := "SELECT id, description FROM devices ORDER BY created_at DESC"
+	query := "SELECT id, description FROM devices WHERE deleted_at IS NULL AND status = 'true' ORDER BY created_at DESC"
 
 	rows, err := p.db.Query(query)
 	if err != nil {

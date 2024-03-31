@@ -46,10 +46,16 @@ func (v *V1) RegisterRoutes(resources embed.FS) error {
 	api := v.router.Group("/api").Use(v.guard.Check)
 	{
 		api.GET("/healthz", v.Healthz)
+
 		api.GET("/datapoints/get-all", v.GetAllDatapoints(v.storage)) //TODO: remove
 		api.GET("/datapoints/info/labels", v.GetAllLabels(v.storage))
 		api.GET("/datapoints/info/devices", v.GetAllDevices(v.storage))
 		api.POST("/datapoints/find", v.FindDatapoints(v.storage))
+
+		api.GET("/devices/get", v.GetDevices(v.storage))
+		api.POST("/devices/upsert", v.UpsertDevice(v.storage))
+		api.GET("/devices/delete/:id", v.DeleteDevice(v.storage))
+
 		api.POST("/users/create", v.CreateUser(v.storage))
 	}
 

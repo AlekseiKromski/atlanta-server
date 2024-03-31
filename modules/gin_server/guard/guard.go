@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"regexp"
 	"time"
 )
 
@@ -104,8 +105,12 @@ func (g *Guard) Check(c *gin.Context) {
 		tokenRequest = t
 	} else {
 		tokenRequest = req.Header.Get("Authorization")
-		if len(tokenRequest) != 0 {
+		if len(tokenRequest) != 0 && len(tokenRequest) > 10 {
 			tokenRequest = tokenRequest[7:len(tokenRequest)]
+		} else {
+			g.log("there is not token in request", req.URL.String())
+			c.AbortWithStatusJSON(http.StatusUnauthorized, newErrorMessage("cannot find token in request"))
+			return
 		}
 	}
 
@@ -156,7 +161,13 @@ func (g *Guard) Check(c *gin.Context) {
 
 	denied := true
 	for _, path := range g.permissions[user.Role] {
-		if req.URL.Path == path.Urn {
+		matched, err := regexp.MatchString(path.Urn, req.URL.Path)
+		if err != nil {
+			g.log("regexp match string error", err.Error())
+			continue
+		}
+
+		if matched {
 			denied = false
 		}
 	}
