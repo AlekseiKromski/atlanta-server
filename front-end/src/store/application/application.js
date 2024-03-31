@@ -12,6 +12,7 @@ const applicationSlice = createSlice({
                     headers: {},
                     withCredentials: true
                 })
+                instance.defaults.timeout = 15000;
 
                 instance.interceptors.response.use(
                     (response) => {
@@ -33,15 +34,12 @@ const applicationSlice = createSlice({
             } ()
         },
         reducers: {
-            addToken: (state, params) => {
-                // state.axios.defaults.headers.common['Authorization'] = `Bearer ${params.payload.token}`;
-            },
         }
     }
 );
 
 // this is for dispatch
-export const {addToken} = applicationSlice.actions;
+// export const {addToken} = applicationSlice.actions;
 
 // this is for configureStore
 export default applicationSlice.reducer;

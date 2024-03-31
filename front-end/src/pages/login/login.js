@@ -1,7 +1,6 @@
 import {Button, Input} from "@nextui-org/react";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
-import {addToken} from "../../store/application/application";
 import {useNavigate} from "react-router-dom";
 import Cookies from 'js-cookie';
 import LoginStyle from "./login.module.css"
@@ -28,7 +27,6 @@ export default function Login() {
             withCredentials: true
         })
             .then(res => {
-                dispatch(addToken(res.data));
                 navigate("/")
                 Cookies.set('token', res.data.token, { expires: 1, secure: true, httpOnly: true});
                 setTimeout(() => setLoader(false), 1000)
