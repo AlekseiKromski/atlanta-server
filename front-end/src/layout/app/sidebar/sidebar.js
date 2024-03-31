@@ -19,6 +19,11 @@ export default function Sidebar() {
                     isActive ? SidebarStyle.Active : ""
                 }
                 to="/devices">Devices</NavLink>
+            <NavLink
+                className={({isActive}) =>
+                    isActive ? SidebarStyle.Active : ""
+                }
+                to="/users">Users</NavLink>
             <NavLink to="/settings">Settings</NavLink>
         </div>
     )
