@@ -57,6 +57,8 @@ func (v *V1) RegisterRoutes(resources embed.FS) error {
 		api.GET("/devices/delete/:id", v.DeleteDevice(v.storage))
 
 		api.POST("/users/create", v.CreateUser(v.storage))
+
+		api.GET("/auth/logout", v.guard.Logout)
 	}
 
 	return nil

@@ -1,8 +1,12 @@
 import NavbarStyles from "./navbar.module.css"
 import {Link} from "react-router-dom";
 import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@nextui-org/react";
+import {useSelector} from "react-redux";
 
 export default function Navbar() {
+
+    const application = useSelector((state) => state.application);
+
     return (
         <div className={NavbarStyles.Navbar + " flex justify-between"}>
             <Link to={"/"}>Atlanta</Link>
@@ -19,7 +23,15 @@ export default function Navbar() {
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
                         <DropdownItem key="new">Settings</DropdownItem>
-                        <DropdownItem key="delete" className="text-danger" color="danger">
+                        <DropdownItem key="delete" className="text-danger" color="danger" onClick={
+                            () => {
+                                application.axios.get("/api/auth/logout")
+                                    .then(res => {
+                                        window.location = "/"
+                                    })
+                                    .catch(e => console.log(e))
+                            }
+                        }>
                             Logout
                         </DropdownItem>
                     </DropdownMenu>

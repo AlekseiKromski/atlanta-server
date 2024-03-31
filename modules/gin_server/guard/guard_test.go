@@ -7,7 +7,7 @@ import (
 )
 
 func TestGuard_Auth(t *testing.T) {
-	hash, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte("Jusebox200"), bcrypt.DefaultCost)
 	if err != nil {
 		panic(err)
 	}
