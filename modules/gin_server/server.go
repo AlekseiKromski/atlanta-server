@@ -48,7 +48,7 @@ func (s *Server) Start(notifyChannel chan struct{}, busEventChannel chan core.Bu
 
 	storage, err := s.getStorageFromRequirement(requirements)
 	if err != nil {
-		s.Log("cannot get storage requirement")
+		s.Log("cannot get storage requirement", err.Error())
 		return
 	}
 
