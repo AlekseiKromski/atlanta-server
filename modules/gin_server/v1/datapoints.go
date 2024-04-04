@@ -6,19 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (v *V1) GetAllDatapoints(store storage.Storage) func(c *gin.Context) {
-	return func(c *gin.Context) {
-		dps, err := store.GetAllDatapoints()
-		if err != nil {
-			v.log("cannot get all datapoints from database", err.Error())
-			c.JSON(400, NewErrorResponse("cannot get datapoints"))
-			return
-		}
-
-		c.JSON(200, dps)
-	}
-}
-
 func (v *V1) FindDatapoints(store storage.Storage) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		defer c.Request.Body.Close()

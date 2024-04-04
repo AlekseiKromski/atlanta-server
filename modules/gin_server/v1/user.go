@@ -45,14 +45,27 @@ func (v *V1) UpsertUser(store storage.Storage) func(c *gin.Context) {
 
 		if uur.Id != nil && uur.DeletedAt == nil {
 			// update
-			hash, err := bcrypt.GenerateFromPassword([]byte(uur.Password), bcrypt.DefaultCost)
+
+			user, err := store.GetUserById(*uur.Id)
 			if err != nil {
-				c.Status(400)
+				v.log("cannot get user", err.Error())
+				c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot get user"))
 				return
 			}
 
-			if err := store.UpdateUser(*uur.Id, uur.Username, uur.Email, uur.First_name, uur.Second_name, string(hash), uur.Role); err != nil {
-				v.log("cannot create user", err.Error())
+			hash_password := user.Password
+			if len(uur.Password) != 0 {
+				hash, err := bcrypt.GenerateFromPassword([]byte(uur.Password), bcrypt.DefaultCost)
+				if err != nil {
+					v.log("cannot generate password", err.Error())
+					c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot generate password"))
+					return
+				}
+				hash_password = string(hash)
+			}
+
+			if err := store.UpdateUser(*uur.Id, uur.Username, uur.Email, uur.First_name, uur.Second_name, hash_password, uur.Role); err != nil {
+				v.log("cannot update user", err.Error())
 				c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot update user"))
 				return
 			}
@@ -78,7 +91,7 @@ func (v *V1) UpsertUser(store storage.Storage) func(c *gin.Context) {
 
 			if err := store.CreateUser(uur.Username, uur.Email, uur.First_name, uur.Second_name, string(hash), uur.Role); err != nil {
 				v.log("cannot create user", err.Error())
-				c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot create user"))
+				c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot delete user"))
 				return
 			}
 
