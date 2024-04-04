@@ -11,7 +11,7 @@ export default function Navbar() {
         <div className={NavbarStyles.Navbar + " flex justify-between"}>
             <Link to={"/"}>Atlanta</Link>
             <div class="gap-1.5 flex justify-center items-center">
-                <span>Hi, Aleksei Kromski</span>
+                <span>Hi, {application.user && application.user.first_name} {application.user && application.user.second_name}</span>
                 <Dropdown>
                     <DropdownTrigger>
                         <Button

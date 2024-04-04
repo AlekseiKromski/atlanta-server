@@ -1,6 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
 import axios from "axios"
-import Cookies from 'js-cookie';
 
 const applicationSlice = createSlice({
         name: 'axios',
@@ -31,15 +30,19 @@ const applicationSlice = createSlice({
                 );
 
                 return instance
-            } ()
+            } (),
+            user: null
         },
         reducers: {
+            setUser: (state, user) => {
+                state.user = user.payload
+            }
         }
     }
 );
 
 // this is for dispatch
-// export const {addToken} = applicationSlice.actions;
+export const {setUser} = applicationSlice.actions;
 
 // this is for configureStore
 export default applicationSlice.reducer;

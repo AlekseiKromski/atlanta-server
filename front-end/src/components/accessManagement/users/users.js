@@ -2,7 +2,7 @@ import Wrapper from "../../common/wrapper/wrapper";
 import UsersStyle from "./users.module.css"
 import {Table as TableReact} from "@nextui-org/table";
 import {
-    Button,
+    Button, Chip,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -325,7 +325,9 @@ export default function Users() {
                                         <TableCell>{u.first_name}</TableCell>
                                         <TableCell>{u.second_name}</TableCell>
                                         <TableCell>{u.email}</TableCell>
-                                        <TableCell>{u.role_name}</TableCell>
+                                        <TableCell>
+                                            <Chip color="success" variant="flat">{u.role_name}</Chip>
+                                        </TableCell>
                                         <TableCell>{u.created_at}</TableCell>
                                         <TableCell>{u.updated_at}</TableCell>
                                         <TableCell>

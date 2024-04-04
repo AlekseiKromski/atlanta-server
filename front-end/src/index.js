@@ -14,6 +14,7 @@ import store from "./store/store"
 import Login from "./pages/login/login";
 import Devices from "./pages/devices/devices";
 import AccessManagement from "./pages/accessManagement/accessManagement";
+import Main from "./pages/main/main";
 
 const router = createHashRouter([
     {
@@ -23,7 +24,7 @@ const router = createHashRouter([
                 path: "/datapoints/search", element: <Search/>,
             },
             {
-                path: "/", element: <Search/>,
+                path: "/", element: <Main/>,
             },
             {
                 path: "/datapoints/live", element: <Live/>,
