@@ -23,7 +23,7 @@ export default function Sidebar() {
                 className={({isActive}) =>
                     isActive ? SidebarStyle.Active : ""
                 }
-                to="/users">Users</NavLink>
+                to="/access-management">Access management</NavLink>
             <NavLink to="/settings">Settings</NavLink>
         </div>
     )

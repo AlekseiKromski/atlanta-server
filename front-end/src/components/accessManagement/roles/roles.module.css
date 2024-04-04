@@ -1,0 +1,13 @@
+.RolesBody{
+    padding: 15px;
+    gap: 15px;
+}
+.RolesPanel{
+    gap: 15px;
+}
+.RolesChip{
+    gap: 5px;
+}
+.RoleClick{
+    cursor: pointer;
+}

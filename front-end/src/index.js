@@ -13,6 +13,7 @@ import {Provider} from 'react-redux';
 import store from "./store/store"
 import Login from "./pages/login/login";
 import Devices from "./pages/devices/devices";
+import AccessManagement from "./pages/accessManagement/accessManagement";
 
 const router = createHashRouter([
     {
@@ -29,6 +30,9 @@ const router = createHashRouter([
             },
             {
                 path: "/devices", element: <Devices/>,
+            },
+            {
+                path: "/access-management", element: <AccessManagement/>,
             }
         ],
     },
