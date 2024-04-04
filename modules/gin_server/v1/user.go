@@ -8,6 +8,32 @@ import (
 	"net/http"
 )
 
+func (v *V1) GetCurrentUser(store storage.Storage) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		userId, exist := c.Get("uid")
+		if !exist {
+			v.log("cannot get current user form request")
+			c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot get current user form request"))
+			return
+		}
+
+		val, ok := userId.(string)
+		if !ok {
+			v.log("wrong user id")
+			c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("wrong user id"))
+			return
+		}
+
+		user, err := store.GetUserByIdWithEndpoints(val)
+		if err != nil {
+			v.log("cannot find user", err.Error())
+			c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot find user"))
+			return
+		}
+
+		c.JSON(http.StatusOK, user)
+	}
+}
 func (v *V1) GetAllUsers(store storage.Storage) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		users, err := store.GetAllUsers()
