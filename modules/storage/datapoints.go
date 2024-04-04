@@ -21,7 +21,6 @@ type Datapoint struct {
 
 type StorageDatapoint interface {
 	SaveDatapoints(deviceUuid string, datapoints []models.DataPoints) ([]*Datapoint, error) // SaveDatapoints - Save datapoint to database
-	GetAllDatapoints() ([]*Datapoint, error)
 	FindDatapoints(fd *FindDatapointsRequest) ([]*Datapoint, []string, error)
 	FindAllLabels() ([]string, error)
 	FindAllDevices() ([]*Device, error)

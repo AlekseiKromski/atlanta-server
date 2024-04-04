@@ -32,27 +32,6 @@ func (p *Postgres) SaveDatapoints(deviceUuid string, datapoints []models.DataPoi
 	return dps, nil
 }
 
-func (p *Postgres) GetAllDatapoints() ([]*storage.Datapoint, error) {
-	query := "SELECT id, deviceUuid, value, type, unit, label, flags, measurement_time, created_at, updated_at FROM datapoints ORDER BY created_at DESC LIMIT 3000"
-	rows, err := p.db.Query(query)
-	if err != nil {
-		return nil, fmt.Errorf("cannot get all datapoints: %v", err)
-	}
-	defer rows.Close()
-
-	dps := []*storage.Datapoint{}
-	for rows.Next() {
-		dp := &storage.Datapoint{}
-		err := rows.Scan(&dp.ID, &dp.DeviceId, &dp.Value, &dp.ValueType, &dp.Unit, &dp.Label, &dp.Flags, &dp.MeasurementTime, &dp.CreatedAt, &dp.UpdatedAt)
-		if err != nil {
-			return nil, fmt.Errorf("cannot read response from database: %v", err)
-		}
-		dps = append(dps, dp)
-	}
-
-	return dps, nil
-}
-
 func (p *Postgres) FindDatapoints(fd *storage.FindDatapointsRequest) ([]*storage.Datapoint, []string, error) {
 	query := "SELECT DISTINCT ON (measurement_time, label) id, deviceUuid, value, type, unit, label, flags, measurement_time, created_at, updated_at FROM datapoints WHERE measurement_time BETWEEN $1 and $2 "
 

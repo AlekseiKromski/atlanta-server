@@ -189,6 +189,38 @@ var migrations = []*Migration{
 		)
 		`,
 	},
+
+	// add description field to endpoints
+	&Migration{
+		Name: "alter_endpoints_description_field",
+		Sql: `
+		ALTER TABLE endpoints ADD description TEXT NOT NULL DEFAULT '';
+		`,
+	},
+
+	// add unique property to endpoints urn
+	&Migration{
+		Name: "alter_endpoints_urn_unique_constraint",
+		Sql: `
+			ALTER TABLE endpoints ADD CONSTRAINT urn_unique UNIQUE (urn);
+		`,
+	},
+
+	// add unique property to roles name
+	&Migration{
+		Name: "alter_roles_name_constraint",
+		Sql: `
+			ALTER TABLE roles ADD CONSTRAINT roles_name_unique UNIQUE (name);
+		`,
+	},
+
+	// add unique property to users username
+	&Migration{
+		Name: "alter_users_username_constraint",
+		Sql: `
+			ALTER TABLE users ADD CONSTRAINT users_username_unique UNIQUE (username);
+		`,
+	},
 }
 
 func (p *Postgres) migrations() error {

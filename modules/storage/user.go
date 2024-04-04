@@ -10,7 +10,7 @@ type User struct {
 	Image       string  `json:"image"`
 	Role        string  `json:"role"`
 	RoleName    *string `json:"role_name,omitempty"`
-	CreateAt    string  `json:"create_at"`
+	CreateAt    string  `json:"created_at"`
 	UpdatedAt   string  `json:"updated_at"`
 	DeletedAt   *string `json:"deleted_at"`
 }
