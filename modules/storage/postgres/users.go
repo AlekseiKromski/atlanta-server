@@ -53,6 +53,21 @@ func (p *Postgres) GetUserById(id string) (*storage.User, error) {
 	return user, nil
 }
 
+func (p *Postgres) GetUserByIdWithEndpoints(id string) (*storage.User, error) {
+	user, err := p.GetUserById(id)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get user: %v", err)
+	}
+
+	endpoints, err := p.GetEndpointByRoleId(user.Role)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get user endpoints by role: %v", err)
+	}
+	user.Endpoints = &endpoints
+
+	return user, nil
+}
+
 func (p *Postgres) GetUserByUsername(username string) (*storage.User, error) {
 	rows, err := p.db.Query("SELECT id, username, first_name, second_name, image, email, password, role FROM users WHERE username = $1 AND deleted_at IS NULL LIMIT 1", username)
 	if err != nil {

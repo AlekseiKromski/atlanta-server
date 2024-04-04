@@ -40,24 +40,44 @@ func (p *Postgres) CreatePermission(roleId, endpointId string) error {
 }
 
 func (p *Postgres) GetEndpointIdsByRoleId(roleId string) ([]string, error) {
-	rows, err := p.db.Query("SELECT endpointuuid FROM roles_endpoints WHERE roleuuid = $1 AND deleted_at IS NULL", roleId)
+	endpoints, err := p.GetEndpointByRoleId(roleId)
 	if err != nil {
-		return nil, fmt.Errorf("cannot get endpoint ids: %v", err)
+		return nil, fmt.Errorf("cannot get endpoints: %v", err)
+	}
+
+	endpointids := []string{}
+	for _, endpoint := range endpoints {
+		endpointids = append(endpointids, endpoint.Id)
+	}
+
+	return endpointids, nil
+}
+
+func (p *Postgres) GetEndpointByRoleId(roleId string) ([]*storage.Endpoint, error) {
+	rows, err := p.db.Query(`
+SELECT endpoints.id, endpoints.urn, endpoints.description, endpoints.created_at, endpoints.updated_at, endpoints.deleted_at
+FROM roles_endpoints
+         INNER JOIN roles ON roles.ID = roles_endpoints.roleuuid
+         INNER JOIN endpoints ON endpoints.ID = roles_endpoints.endpointuuid
+        WHERE roles.ID = $1 AND endpoints.deleted_at IS NULL
+`, roleId)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get endpoint: %v", err)
 	}
 	defer rows.Close()
 
-	endpointids := []string{}
+	endpoints := []*storage.Endpoint{}
 	for rows.Next() {
-		endpointId := ""
-		err := rows.Scan(&endpointId)
+		endpoint := &storage.Endpoint{}
+		err := rows.Scan(&endpoint.Id, &endpoint.Urn, &endpoint.Description, &endpoint.CreatedAt, &endpoint.UpdatedAt, &endpoint.DeletedAt)
 		if err != nil {
 			return nil, fmt.Errorf("cannot read response from database: %v", err)
 		}
 
-		endpointids = append(endpointids, endpointId)
+		endpoints = append(endpoints, endpoint)
 	}
 
-	return endpointids, nil
+	return endpoints, nil
 }
 
 func (p *Postgres) DeletePermission(roleId, endpointId string) error {
