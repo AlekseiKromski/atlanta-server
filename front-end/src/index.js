@@ -15,6 +15,7 @@ import Login from "./pages/login/login";
 import Devices from "./pages/devices/devices";
 import AccessManagement from "./pages/accessManagement/accessManagement";
 import Main from "./pages/main/main";
+import Settings from "./pages/settings/settings";
 
 const router = createHashRouter([
     {
@@ -34,6 +35,9 @@ const router = createHashRouter([
             },
             {
                 path: "/access-management", element: <AccessManagement/>,
+            },
+            {
+                path: "/settings", element: <Settings/>,
             }
         ],
     },

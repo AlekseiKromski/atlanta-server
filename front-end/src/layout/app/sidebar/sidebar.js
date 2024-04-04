@@ -80,7 +80,11 @@ export default function Sidebar() {
                         }
                         to="/access-management">Access management</NavLink> : ""
             }
-            <NavLink to="/settings">Settings</NavLink>
+            <NavLink
+                className={({isActive}) =>
+                    isActive ? SidebarStyle.Active : ""
+                }
+                to="/settings">Settings</NavLink>
         </div>
     )
 }
