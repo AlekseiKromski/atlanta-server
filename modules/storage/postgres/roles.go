@@ -3,6 +3,7 @@ package postgres
 import (
 	"alekseikromski.com/atlanta/modules/storage"
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -49,6 +50,11 @@ func (p *Postgres) GetAllRoles() ([]*storage.Role, error) {
 	for _, v := range roles {
 		processedRoles = append(processedRoles, v)
 	}
+
+	sort.Slice(processedRoles, func(i, j int) bool {
+		return processedRoles[i].CreatedAt.After(processedRoles[j].CreatedAt)
+	})
+
 	return processedRoles, nil
 }
 
