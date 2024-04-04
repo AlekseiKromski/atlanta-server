@@ -34,6 +34,7 @@ func (v *V1) GetCurrentUser(store storage.Storage) func(c *gin.Context) {
 		c.JSON(http.StatusOK, user)
 	}
 }
+
 func (v *V1) GetAllUsers(store storage.Storage) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		users, err := store.GetAllUsers()
@@ -123,5 +124,60 @@ func (v *V1) UpsertUser(store storage.Storage) func(c *gin.Context) {
 
 			c.Status(200)
 		}
+	}
+}
+
+func (v *V1) UpsertCurrentUser(store storage.Storage) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		userId, exist := c.Get("uid")
+		if !exist {
+			v.log("cannot get current user form request")
+			c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot get current user form request"))
+			return
+		}
+
+		val, ok := userId.(string)
+		if !ok {
+			v.log("wrong user id")
+			c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("wrong user id"))
+			return
+		}
+
+		user, err := store.GetUserById(val)
+		if err != nil {
+			v.log("cannot get user", err.Error())
+			c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot get user"))
+			return
+		}
+
+		defer c.Request.Body.Close()
+
+		uur := &upsertUserRequest{}
+		if err := json.NewDecoder(c.Request.Body).Decode(&uur); err != nil {
+			v.log("cannot decode upsert user request", err.Error())
+			c.AbortWithStatusJSON(http.StatusBadRequest, NewErrorResponse("wrong payload"))
+			return
+		}
+
+		hash_password := user.Password
+		if len(uur.Password) != 0 {
+			hash, err := bcrypt.GenerateFromPassword([]byte(uur.Password), bcrypt.DefaultCost)
+			if err != nil {
+				v.log("cannot generate password", err.Error())
+				c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot generate password"))
+				return
+			}
+			hash_password = string(hash)
+		}
+
+		if err := store.UpdateUser(user.Id, uur.Username, uur.Email, uur.First_name, uur.Second_name, hash_password, user.Role); err != nil {
+			v.log("cannot update user", err.Error())
+			c.AbortWithStatusJSON(http.StatusInternalServerError, NewErrorResponse("cannot update user"))
+			return
+		}
+
+		c.Status(200)
+
+		c.JSON(http.StatusOK, user)
 	}
 }

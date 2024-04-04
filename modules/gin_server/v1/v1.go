@@ -56,6 +56,7 @@ func (v *V1) RegisterRoutes(resources embed.FS) error {
 		api.GET("/devices/delete/:id", v.DeleteDevice(v.storage))
 
 		api.GET("/users/current-user", v.GetCurrentUser(v.storage))
+		api.POST("/users/current-user-upsert", v.UpsertCurrentUser(v.storage))
 		api.GET("/users/get", v.GetAllUsers(v.storage))
 		api.POST("/users/upsert", v.UpsertUser(v.storage))
 
