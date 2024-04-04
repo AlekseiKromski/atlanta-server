@@ -31,7 +31,7 @@ export default function Settings() {
         ) {
             return
         }
-        application.axios.post("/api/users/upsert", {
+        application.axios.post("/api/users/current-user-upsert", {
             "username": user.username,
             "first_name": user.first_name,
             "second_name": user.second_name,
