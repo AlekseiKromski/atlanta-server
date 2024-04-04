@@ -5,6 +5,7 @@ import {useState} from "react";
 import {Card, CardBody, Tab, Tabs} from "@nextui-org/react";
 import Users from "../../components/accessManagement/users/users"
 import Roles from "../../components/accessManagement/roles/roles";
+import Endpoints from "../../components/accessManagement/endpoints/endpoints";
 
 export default function AccessManagement() {
     const [alert, setAlert] = useState(null);
@@ -42,7 +43,7 @@ export default function AccessManagement() {
                     <Tab key="endpoints" title="Endpoints">
                         <Card>
                             <CardBody>
-                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                <Endpoints/>
                             </CardBody>
                         </Card>
                     </Tab>
