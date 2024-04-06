@@ -221,6 +221,27 @@ var migrations = []*Migration{
 			ALTER TABLE users ADD CONSTRAINT users_username_unique UNIQUE (username);
 		`,
 	},
+
+	// migrations table
+	&Migration{
+		Name: "create_kv_store",
+		Sql: `
+		CREATE TABLE IF NOT EXISTS public.store
+		(
+			id uuid NOT NULL DEFAULT gen_random_uuid(),
+			key VARCHAR(300) NOT NULL,
+			value text NOT NULL,
+			useruuid uuid NOT NULL,
+			created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+			deleted_at timestamp with time zone DEFAULT NULL,
+			CONSTRAINT kv_store_PK PRIMARY KEY (id),
+		    CONSTRAINT kv_store_users_FK FOREIGN KEY (useruuid)
+				REFERENCES public.users (id) MATCH SIMPLE
+				ON UPDATE NO ACTION
+				ON DELETE NO ACTION
+		)`,
+	},
 }
 
 func (p *Postgres) migrations() error {

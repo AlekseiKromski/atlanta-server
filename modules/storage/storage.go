@@ -7,4 +7,5 @@ type Storage interface {
 	StorageDevices     // StorageDevices - all commands related to devices
 	StorageEndpoints   // StorageEndpoints - all commands related to endpoints
 	StorageRoles       // StorageRoles - all commands related to roles
+	StorageKvStore     // StorageKvStore - all commands related to Key-Value storage
 }

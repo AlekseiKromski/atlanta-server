@@ -66,6 +66,9 @@ func (v *V1) RegisterRoutes(resources embed.FS) error {
 		api.GET("/roles/get", v.GetAllRoles(v.storage))
 		api.POST("/roles/upsert", v.UpsertRole(v.storage))
 
+		api.GET("/store/get/:id", v.GetKVRecord(v.storage))
+		api.POST("/store/upsert", v.UpsertKVRecord(v.storage))
+
 		api.GET("/auth/logout", v.guard.Logout)
 	}
 
