@@ -1,11 +1,11 @@
 import SearchBoxStyle from "./searchBox.module.css"
 import {Button, Checkbox, Chip, Input, Select, SelectItem} from "@nextui-org/react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useSelector} from "react-redux"
-import moment from "moment"
 import Wrapper from "../../common/wrapper/wrapper";
+import moment from "moment"
 
-export default function SearchBox({labels, devices, callback}) {
+export default function SearchBox({history, setHistory, labels, devices, callback, searchOptions}) {
 
     const application = useSelector((state) => state.application);
 
@@ -16,6 +16,7 @@ export default function SearchBox({labels, devices, callback}) {
     const [showType, setShowType] = useState("")
     const [ignored, setIgnored] = useState(false)
     const [loader, setLoader] = useState(false)
+    const [loaderQuery, setLoaderQuery] = useState(false)
 
     const find = () => {
         setLoader(true)
@@ -37,10 +38,78 @@ export default function SearchBox({labels, devices, callback}) {
                 setTimeout(() => setLoader(false), 1000)
             })
             .catch(e => {
-                console.log(e)
                 setTimeout(() => setLoader(false), 1000)
             })
     }
+
+    const save = () => {
+        setLoaderQuery(true)
+
+        let start = startDate !== "" ? moment(startDate).format().split("+")[0] + "Z" : null
+        let end = endDate !== "" ? moment(endDate).format().split("+")[0] + "Z" : null
+        let payload = {
+            key: "history",
+            value: JSON.stringify([
+                {
+                    name: moment.utc( Date.now() ).format(),
+                    value: {
+                        start: start,
+                        end: end,
+                        select: selectedDatapointTypes,
+                        device: selectedDevice,
+                        ignored: ignored,
+                        types: showType,
+                    }
+                },
+                ...history.value
+            ])
+        }
+
+        setHistory(
+            {
+                key: "history",
+                value: [
+                    {
+                        name: moment.utc(Date.now()).format(),
+                        value: {
+                            start: start,
+                            end: end,
+                            select: selectedDatapointTypes,
+                            device: selectedDevice,
+                            ignored: ignored,
+                            types: showType,
+                        }
+                    },
+                    ...history.value
+                ]
+            }
+    )
+
+        application.axios.post(`/api/store/upsert`, payload)
+            .then(res => {
+                setTimeout(() => setLoaderQuery(false), 1000)
+            })
+            .catch(e => {
+                setTimeout(() => setLoaderQuery(false), 1000)
+            })
+    }
+
+    useEffect(() => {
+        if (searchOptions == null) {
+            return
+        }
+        setStartDate(searchOptions.start.slice(0, -1))
+        setEndDate(searchOptions.end.slice(0, -1))
+        setIgnored(searchOptions.ignored)
+        setIgnored(searchOptions.ignored)
+        setSelectedDatapointTypes(searchOptions.select)
+        setShowType(searchOptions.types)
+
+        if (devices.find(d => d.id === searchOptions.device)) {
+            setSelectedDevice(searchOptions.device)
+        }
+
+    }, [searchOptions]);
 
     return (
         <Wrapper width="70%" title="Search" modal={{
@@ -167,13 +236,14 @@ export default function SearchBox({labels, devices, callback}) {
                             type: "",
                             data: []
                         })
+                        setSelectedDevice("")
                     }}>
                         Clear
                     </Button>
 
                     <Button isDisabled={
                         startDate === "" || endDate == "" || selectedDatapointTypes.length === 0 || showType === "" || selectedDevice == ""
-                    } isLoading={loader} color="success" variant="flat" onClick={find}>
+                    } isLoading={loaderQuery} color="success" variant="flat" onClick={save}>
                         Save query
                     </Button>
 
