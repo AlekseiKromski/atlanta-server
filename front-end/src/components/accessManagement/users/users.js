@@ -165,14 +165,10 @@ export default function Users() {
         <div className={UsersStyle.UsersBody + " w-full"}>
             <Wrapper
                 title="Users"
+                fileName="access_management_user.md"
                 modal={
                     {
-                        title: "Users",
-                        body: (
-                            <p>
-                                TODO: ...
-                            </p>
-                        )
+                        title: "Users"
                     }
                 }
             >

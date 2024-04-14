@@ -11,14 +11,10 @@ export default function Live({reconnect, connected}) {
         <Wrapper
             title="Server status"
             width="30%"
+            fileName="live_server_status.md"
             modal={
                 {
-                    title: "Server status help",
-                    body: (
-                        <p>
-                            TODO: ...
-                        </p>
-                    )
+                    title: "Server status help"
                 }
             }
         >

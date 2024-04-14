@@ -9,14 +9,10 @@ export default function Device({device, setDevice, devices}) {
     return (
         <Wrapper
             title="Devices"
+            fileName="live_server_devices.md"
             modal={
                 {
-                    title: "Devices",
-                    body: (
-                        <p>
-                            TODO: ...
-                        </p>
-                    )
+                    title: "Devices"
                 }
             }
         >

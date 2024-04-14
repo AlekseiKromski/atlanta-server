@@ -144,14 +144,10 @@ export default function Roles() {
         <div className={RolesStyle.RolesPanel + " w-full"}>
             <Wrapper
                 title="Roles"
+                fileName="access_management_roles.md"
                 modal={
                     {
-                        title: "Roles",
-                        body: (
-                            <p>
-                                TODO: ...
-                            </p>
-                        )
+                        title: "Roles"
                     }
                 }
             >

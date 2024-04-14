@@ -40,13 +40,9 @@ export default function Map({isDark, labels, datapoints}) {
     return (
         <Wrapper
             title="Map"
+            fileName="live_server_map.md"
             modal={{
-                title: "Map help",
-                body: (
-                    <p>
-                        TODO: ...
-                    </p>
-                )
+                title: "Map help"
             }}
             isDark={isDark}
         >

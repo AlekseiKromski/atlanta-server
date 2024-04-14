@@ -69,13 +69,8 @@ export default function Settings() {
 
     return (
         <div className={SettingsStyle.SettingsBody + " w-full flex flex-col"}>
-            <Wrapper width="100%" title="Search" modal={{
-                title: "Settings",
-                body: (
-                    <p>
-                        TODO: ...
-                    </p>
-                )
+            <Wrapper width="100%" title="Search" fileName="settings.md" modal={{
+                title: "Settings"
             }}>
                 <div className={SettingsStyle.SettingsPanel + " flex flex-col"}>
                     <Input

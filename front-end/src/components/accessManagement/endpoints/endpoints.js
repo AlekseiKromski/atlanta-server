@@ -135,14 +135,10 @@ export default function Endpoints() {
         <div className={EndpointStyle.EndpointsBody + " w-full"}>
             <Wrapper
                 title="Endpoints"
+                fileName="access_management_endpoints.md"
                 modal={
                     {
-                        title: "Endpoints",
-                        body: (
-                            <p>
-                                TODO: ...
-                            </p>
-                        )
+                        title: "Endpoints"
                     }
                 }
             >

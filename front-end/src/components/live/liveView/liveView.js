@@ -30,13 +30,9 @@ export default function LiveView({datapoints, device, labels}) {
     return (
         <Wrapper
             title="Live view"
+            fileName="live_server_view.md"
             modal={{
-                title: "Live view",
-                body: (
-                    <p>
-                        TODO: ...
-                    </p>
-                )
+                title: "Live view"
             }}
         >
             <div className="flex flex-col">

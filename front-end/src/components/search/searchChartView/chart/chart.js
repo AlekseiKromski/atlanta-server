@@ -85,13 +85,9 @@ export default function Chart({isDark, labels, datapoints}) {
     return (
         <Wrapper
             title="Chart"
+            fileName="live_server_chart.md"
             modal={{
-                title: "Chart help",
-                body: (
-                    <p>
-                        TODO: ...
-                    </p>
-                )
+                title: "Chart help"
             }}
             isDark={isDark}
         >

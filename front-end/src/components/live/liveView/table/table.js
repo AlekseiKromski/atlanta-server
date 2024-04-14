@@ -13,13 +13,9 @@ export default function Table({isDark, device, datapoints}) {
     return (
         <Wrapper
             title={"Table"}
+            fileName="live_server_table.md"
             modal={{
-                title: "Table help",
-                body: (
-                    <p>
-                        TODO: ...
-                    </p>
-                )
+                title: "Table help"
             }}
             isDark={isDark}
         >

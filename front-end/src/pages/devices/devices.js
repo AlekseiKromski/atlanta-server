@@ -118,14 +118,10 @@ export default function Devices() {
         <div className={DevicesStyle.DevicesBody + " w-full"}>
             <Wrapper
                 title="Devices"
+                fileName="devices.md"
                 modal={
                     {
-                        title: "Devices",
-                        body: (
-                            <p>
-                                TODO: ...
-                            </p>
-                        )
+                        title: "Devices"
                     }
                 }
             >

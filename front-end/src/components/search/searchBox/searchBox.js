@@ -112,13 +112,8 @@ export default function SearchBox({history, setHistory, labels, devices, callbac
     }, [searchOptions]);
 
     return (
-        <Wrapper width="70%" title="Search" modal={{
-            title: "Search help",
-            body: (
-                <p>
-                    TODO: ...
-                </p>
-            )
+        <Wrapper width="70%" title="Search" fileName={"search.md"} modal={{
+            title: "Search help"
         }}>
             <div>
                 <div>

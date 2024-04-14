@@ -2,10 +2,8 @@ import {Button, Select, SelectItem,} from "@nextui-org/react";
 import Wrapper from "../../common/wrapper/wrapper";
 import StyleHistory from "./searchHistory.module.css"
 import {useSelector} from "react-redux";
-import {useState} from "react";
-
+import {useEffect, useState} from "react";
 export default function SearchHistory({history, setHistory, setSearchParameters}) {
-
     const application = useSelector((state) => state.application);
     const [loader, setLoader] = useState(false)
 
@@ -31,13 +29,8 @@ export default function SearchHistory({history, setHistory, setSearchParameters}
     }
 
     return (
-        <Wrapper width="30%" title="History" modal={{
-            title: "History help",
-            body: (
-                <p>
-                    TODO: ...
-                </p>
-            )
+        <Wrapper width="30%" title="History" fileName={"history.md"} modal={{
+            title: "History help"
         }}>
             <div className="flex flex-col h-full">
                 <div className={StyleHistory.Body}>

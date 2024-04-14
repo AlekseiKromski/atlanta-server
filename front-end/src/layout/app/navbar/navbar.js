@@ -22,7 +22,9 @@ export default function Navbar() {
                         </Button>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
-                        <DropdownItem key="new">Settings</DropdownItem>
+                        <DropdownItem key="new">
+                            <Link to="/settings">Settings</Link>
+                        </DropdownItem>
                         <DropdownItem key="delete" className="text-danger" color="danger" onClick={
                             () => {
                                 application.axios.get("/api/auth/logout")

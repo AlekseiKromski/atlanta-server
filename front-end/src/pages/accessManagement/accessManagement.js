@@ -14,14 +14,10 @@ export default function AccessManagement() {
         <div className={AccessManagementStyle.DevicesBody + " w-full"}>
             <Wrapper
                 title="Access management"
+                fileName="access_management.md"
                 modal={
                     {
-                        title: "Access management",
-                        body: (
-                            <p>
-                                TODO: ...
-                            </p>
-                        )
+                        title: "Access management"
                     }
                 }
             >
