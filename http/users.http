@@ -1,16 +1,68 @@
-### Create user
-POST http://localhost:3000/users/create
+### Get all users
+GET {{basepath}}/api/users/get
 Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get current user
+GET {{basepath}}/api/users/current-user
+Authorization: Bearer {{token}}
+
+### Create user
+POST {{basepath}}/api/users/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "username": "test",
   "first_name": "test",
   "second_name": "test",
-  "image": "test",
   "password": "test",
-  "email": "test"
+  "email": "test",
+  "role": "9349e8e0-9f69-4a97-a47f-85d8d55a4776"
 }
 
-### Get user
-GET http://localhost:3000/users/get/a2d2a4e7-3f3d-4799-89eb-7d5cb94207e9
+### Update user
+POST {{basepath}}/api/users/upsert
 Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "f65da406-df46-4a67-9287-44330605db5e",
+  "username": "test",
+  "first_name": "test",
+  "second_name": "test",
+  "password": "test",
+  "email": "test",
+  "role": "9349e8e0-9f69-4a97-a47f-85d8d55a4776"
+}
+
+### Delete user
+POST {{basepath}}/api/users/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "f65da406-df46-4a67-9287-44330605db5e",
+  "username": "test",
+  "first_name": "test",
+  "second_name": "test",
+  "password": "test",
+  "email": "test",
+  "role": "9349e8e0-9f69-4a97-a47f-85d8d55a4776",
+  "deleted_at": "ok"
+}
+
+### Update current user
+POST {{basepath}}/api/users/current-user-upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "test",
+  "first_name": "test",
+  "second_name": "test",
+  "password": "test",
+  "email": "test",
+  "role": "708f2311-7545-4aec-885a-14c5c57a64d3",
+  "id": "c8d5e33f-51e1-45d7-86f2-ea4d3d4d75ae"
+}

@@ -1,0 +1,8 @@
+### Auth user
+POST {{basepath}}/api/auth
+Content-Type: application/json
+
+{
+  "username": "",
+  "password": ""
+}

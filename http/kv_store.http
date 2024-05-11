@@ -1,0 +1,12 @@
+GET {{basepath}}/api/store/get/test
+Authorization: Bearer {{token}}
+
+### Upsert
+POST {{basepath}}/api/store/upsert
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "key": "store",
+  "value": "{test123}"
+}

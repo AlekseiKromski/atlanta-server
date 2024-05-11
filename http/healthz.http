@@ -1,0 +1,2 @@
+GET {{basepath}}/api/healthz
+Authorization: Bearer {{token}}

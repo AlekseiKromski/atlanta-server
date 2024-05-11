@@ -1,0 +1,33 @@
+### GetAllRoles
+GET {{basepath}}/api/roles/get
+Authorization: Bearer {{token}}
+
+### Create roles
+POST {{basepath}}/api/roles/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "test"
+}
+
+### Update roles
+POST {{basepath}}/api/roles/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "e587acde-4d2c-4af7-897e-4292f441517b",
+  "name": "/api/test/test"
+}
+
+### Delete roles
+POST {{basepath}}/api/roles/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "e587acde-4d2c-4af7-897e-4292f441517b",
+  "name": "/api/test/test",
+  "deleted_at": "any string here"
+}

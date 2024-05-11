@@ -1,0 +1,29 @@
+GET {{basepath}}/api/devices/get
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Create device
+POST {{basepath}}/api/devices/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "description": "test 1",
+  "status": false
+}
+
+### Update device
+POST {{basepath}}/api/devices/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "4b95edb2-85a8-4644-a505-a34da05e0eab",
+  "description": "test 1 - edited 5",
+  "status": true
+}
+
+### Delete device
+GET {{basepath}}/api/devices/delete/4b95edb2-85a8-4644-a505-a34da05e0eab
+Content-Type: application/json
+Authorization: Bearer {{token}}

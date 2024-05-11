@@ -1,0 +1,36 @@
+### GetAllEndpoints
+GET {{basepath}}/api/endpoints/get
+Authorization: Bearer {{token}}
+
+### Create endpoint
+POST {{basepath}}/api/endpoints/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "urn": "/api/test",
+  "description": "test"
+}
+
+### Update endpoint
+POST {{basepath}}/api/endpoints/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "c4c556cf-98c5-42f5-b2fa-4495eba3884a",
+  "urn": "/api/test/test",
+  "description": "test2"
+}
+
+### Delete endpoint
+POST {{basepath}}/api/endpoints/upsert
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "c4c556cf-98c5-42f5-b2fa-4495eba3884a",
+  "urn": "/api/test/test",
+  "description": "test2",
+  "deleted_at": "any string here"
+}
