@@ -14,6 +14,7 @@ COPY .env ./
 ADD . .
 
 COPY --from=0 /app/build ./front-end/build
+COPY --from=0 /app/build ./front-end/public
 
 RUN go build .
 
