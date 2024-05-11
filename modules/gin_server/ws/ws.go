@@ -3,7 +3,7 @@ package ws
 import (
 	"alekseikromski.com/atlanta/modules/gin_server/guard"
 	"fmt"
-	"github.com/AlekseiKromski/at-socket-server/core"
+	"github.com/AlekseiKromski/ws-gin-upgrader/core"
 	"github.com/gin-gonic/gin"
 	"log"
 )
