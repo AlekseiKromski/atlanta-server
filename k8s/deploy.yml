@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlanta-server
+  labels:
+    app: atlanta-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlanta-server
+  template:
+    metadata:
+      labels:
+        app: atlanta-server
+    spec:
+      containers:
+        - name: atlanta-server-prod
+          image: docker.alekseikromski.com/atlanta-server:latest
+          resources:
+            requests:
+              cpu: "100m"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: regcred
