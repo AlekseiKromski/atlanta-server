@@ -5,7 +5,6 @@ pipeline {
             steps {
                 sh "gpg --decrypt ./env/prod.env.asc > prod.env"
                 sh "mv ./env/prod.env ./.env"
-                sh "cat ./.env"
             }
         }
         stage('build') {
