@@ -3,8 +3,7 @@ pipeline {
     stages {
         stage('decrypt prod.env') {
             steps {
-                sh "gpg --decrypt ./env/prod.env.asc > prod.env"
-                sh "mv ./env/prod.env ./.env"
+                sh "gpg --decrypt ./env/prod.env.asc > .env"
             }
         }
         stage('build') {
